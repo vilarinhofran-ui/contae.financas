@@ -1654,6 +1654,10 @@
       .price-card.featured {
         border: 2px solid var(--blue);
         box-shadow: 0 14px 32px rgba(20, 121, 235, 0.12);
+        transform: scale(1.02);
+      }
+      .price-card.featured:hover {
+        transform: translateY(-6px) scale(1.02);
       }
       .price-card h3 {
         font-size: 1.1rem;
@@ -2738,7 +2742,7 @@
         </div>
         <div class="pricing-grid">
           <article class="price-card">
-            <h3>Escolha seu plano</h3>
+            <h3>Essencial</h3>
             <p id="selected-plan-description">Para experimentar o controle financeiro sem compromisso.</p>
             <select class="app-select" id="pricing-plan-select" aria-label="Selecionar plano">
               <option value="Mensal">Mensal - R$ 19,90 / mês</option>
@@ -2749,10 +2753,26 @@
               <li>Dashboard completo</li>
               <li>Objetivos personalizados</li>
               <li>Lançamentos e saldos organizados</li>
-              <li>Curso personalizado</li>
-              <li id="selected-plan-extra">Acesso mensal sem compromisso</li>
+              <li>Acesso mensal sem compromisso</li>
             </ul>
             <button class="btn btn-primary" id="pricing-checkout" type="button">Continuar para pagamento</button>
+          </article>
+          <article class="price-card featured">
+            <div class="popular">MAIS POPULAR</div>
+            <h3>Plus - Educação Premium</h3>
+            <p>Tudo do Essencial + Educação Financeira Personalizada</p>
+            <div class="price">R$ 39,90 <small>/ mês</small></div>
+            <ul class="price-list">
+              <li>Tudo do plano Essencial</li>
+              <li>Trilhas de aprendizado personalizadas</li>
+              <li>Microaulas rápidas (3-8 min)</li>
+              <li>Diagnóstico financeiro inteligente</li>
+              <li>Tutor CONTAÊ com IA</li>
+              <li>Desafios e quizzes adaptativos</li>
+              <li>Progresso e conquistas</li>
+              <li>Integração com +RendaÊ</li>
+            </ul>
+            <button class="btn btn-primary" type="button">Contratar Plus</button>
           </article>
         </div>
       </div>
@@ -2761,38 +2781,32 @@
     <section class="course-section" id="curso">
       <div class="container course-layout">
         <div class="course-copy">
-          <div class="section-kicker">Plus de educação financeira</div>
-          <h2>Aprenda o que faz sentido para a sua vida.</h2>
+          <div class="section-kicker">Educação Financeira Inteligente</div>
+          <h2>CONTAÊ Plus: Seu Personal Trainer Financeiro</h2>
           <p>
-            O CONTAÊ monta uma trilha a partir do seu perfil, renda, momento e
-            objetivos. Quem quer sair das dívidas começa por juros; quem quer
-            uma reserva recebe aulas de segurança e consistência.
+            Não é um curso tradicional. O CONTAÊ Plus analisa seu perfil, seus objetivos e seu momento financeiro para montar automaticamente uma trilha de aprendizado personalizada — com microaulas rápidas, desafios práticos e um tutor IA contextualizado.
           </p>
           <button class="btn btn-primary" id="course-profile" type="button">
-            Personalizar minha trilha <span aria-hidden="true">&#8594;</span>
+            Descobrir sua trilha <span aria-hidden="true">&#8594;</span>
           </button>
         </div>
         <div class="course-card">
-          <h3>Trilha sugerida para Marina</h3>
+          <h3>Como funciona</h3>
           <p>
-            Perfil: organizando a vida &middot; Objetivo: reserva de emergência
+            Seu momento · Seu objetivo · Seu conhecimento = Sua trilha
           </p>
           <div class="course-items">
             <div class="course-item">
-              <strong>01 &middot; Comece pelo agora</strong>Mapeie sua renda e
-              seus gastos reais.
+              <strong>🎯 Diagnóstico</strong>Identificamos seu momento financeiro e o que você precisa aprender.
             </div>
             <div class="course-item">
-              <strong>02 &middot; Reserva sem susto</strong>Defina um primeiro
-              valor possível.
+              <strong>📚 Trilha Curta</strong>4-8 microaulas de 3-8 minutos cada. Conclua em poucas horas.
             </div>
             <div class="course-item">
-              <strong>03 &middot; Decisões melhores</strong>Aprenda a separar
-              desejo de prioridade.
+              <strong>✅ Prático</strong>Cada aula tem desafio real + quiz + aplicação imediata.
             </div>
             <div class="course-item">
-              <strong>04 &middot; Próximo nível</strong>Construa consistência
-              mês a mês.
+              <strong>🧠 Tutor IA</strong>Pergunte, tire dúvidas, adapte o ritmo ao seu momento.
             </div>
           </div>
         </div>
