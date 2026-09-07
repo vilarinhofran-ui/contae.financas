@@ -3645,7 +3645,7 @@
           .value.trim();
         const type = document.querySelector("#transaction-type").value;
         const value = Number(
-          document.querySelector("#transaction-value").value,
+          document.querySelector("#transaction-value").value
         );
         if (!description || !Number.isFinite(value) || value <= 0) {
           transactionFeedback.style.color = "#c24561";
