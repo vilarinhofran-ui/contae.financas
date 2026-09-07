@@ -2740,9 +2740,17 @@
           </p>
           <p class="payment-feedback" id="subscription-expired-notice" role="status" hidden></p>
         </div>
+        <div class="pricing-selector" style="text-align: center; margin-bottom: 48px;">
+          <label for="plan-type-select" style="display: block; margin-bottom: 12px; color: #71809b; font-size: 0.85rem; font-weight: 500;">Escolha como deseja começar:</label>
+          <select class="app-select" id="plan-type-select" aria-label="Tipo de plano" style="width: min(100%, 300px); margin: 0 auto; display: block;">
+            <option value="essencial">Apenas Essencial - Controle Financeiro</option>
+            <option value="plus">Plus - Com Educação Financeira</option>
+            <option value="bundle">Bundle - Essencial + Plus (Economize 15%)</option>
+          </select>
+        </div>
         <div class="pricing-grid">
-          <article class="price-card">
-            <h3>Essencial</h3>
+          <article class="price-card" id="essential-card">
+            <h3 id="plan-name">Essencial</h3>
             <p id="selected-plan-description">Para experimentar o controle financeiro sem compromisso.</p>
             <select class="app-select" id="pricing-plan-select" aria-label="Selecionar plano">
               <option value="Mensal">Mensal - R$ 19,90 / mês</option>
@@ -2757,7 +2765,7 @@
             </ul>
             <button class="btn btn-primary" id="pricing-checkout" type="button">Continuar para pagamento</button>
           </article>
-          <article class="price-card featured">
+          <article class="price-card featured" id="plus-card">
             <div class="popular">MAIS POPULAR</div>
             <h3>Plus - Educação Premium</h3>
             <p>Tudo do Essencial + Educação Financeira Personalizada</p>
@@ -2795,7 +2803,7 @@
           <p>
             Seu momento · Seu objetivo · Seu conhecimento = Sua trilha
           </p>
-          <div class="course-items">
+          <div class="course-items" id="course-demo-items">
             <div class="course-item">
               <strong>🎯 Diagnóstico</strong>Identificamos seu momento financeiro e o que você precisa aprender.
             </div>
@@ -2807,6 +2815,43 @@
             </div>
             <div class="course-item">
               <strong>🧠 Tutor IA</strong>Pergunte, tire dúvidas, adapte o ritmo ao seu momento.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container" style="margin-top: 48px;">
+        <div style="background: rgba(62, 224, 160, 0.08); padding: 28px; border-radius: 10px; border: 1px solid rgba(62, 224, 160, 0.2);">
+          <h3 style="margin-top: 0; color: var(--ink);">Exemplos de Trilhas Personalizadas</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;" id="course-examples">
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid var(--blue);">
+              <strong style="color: var(--blue);">Começando agora</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Pouco conhecimento, precisa organizar.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Mapeie sua renda e gastos<br><strong>02.</strong> Defina uma reserva possível<br><strong>03.</strong> Aprenda a separar desejo de prioridade<br><strong>04.</strong> Crie consistência e acompanhe</div>
+            </div>
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid var(--sky);">
+              <strong style="color: var(--sky);">Organizando a vida</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Renda clara, gastos confusos.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Comece pelo agora<br><strong>02.</strong> Reserva sem susto<br><strong>03.</strong> Decisões melhores<br><strong>04.</strong> Próximo nível</div>
+            </div>
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid #ef5350;">
+              <strong style="color: #ef5350;">Saindo das dívidas</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Compromissos a priorizar.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Entenda suas dívidas<br><strong>02.</strong> O peso dos juros<br><strong>03.</strong> Plano de saída<br><strong>04.</strong> Reconstruindo</div>
+            </div>
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid #9ccc65;">
+              <strong style="color: #9ccc65;">Construindo segurança</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Focado em reserva e estabilidade.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Quanto você realmente precisa<br><strong>02.</strong> Estratégia de acúmulo<br><strong>03.</strong> Proteção e segurança<br><strong>04.</strong> Mantendo o rumo</div>
+            </div>
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid var(--mint);">
+              <strong style="color: var(--mint);">Evoluindo</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Controle pronto, quer melhorar.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Análise avançada de gastos<br><strong>02.</strong> Otimização financeira<br><strong>03.</strong> Planejamento estratégico<br><strong>04.</strong> Preparando o próximo passo</div>
+            </div>
+            <div style="background: white; padding: 16px; border-radius: 7px; border-left: 4px solid #ffc107;">
+              <strong style="color: #ffc107;">Investindo & Expandindo</strong>
+              <p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--muted);">Organizado, quer crescer.</p>
+              <div style="margin-top: 12px; font-size: 0.8rem; color: #50627c;"><strong>01.</strong> Antes de investir<br><strong>02.</strong> Risco x retorno<br><strong>03.</strong> Seu perfil de investidor<br><strong>04.</strong> Estratégia personalizada</div>
             </div>
           </div>
         </div>
@@ -3862,6 +3907,49 @@
         selectedPlanPrice.innerHTML = annual ? "R$ 178,80 <small>/ ano</small>" : "R$ 19,90 <small>/ mês</small>";
         selectedPlanExtra.textContent = annual ? "Relatórios anuais e 2 meses de economia" : "Acesso mensal sem compromisso";
       });
+
+      // Dynamic plan type management
+      const planTypeSelect = document.querySelector("#plan-type-select");
+      const essentialCard = document.querySelector("#essential-card");
+      const plusCard = document.querySelector("#plus-card");
+      const planNameEl = document.querySelector("#plan-name");
+
+      if (planTypeSelect) {
+        planTypeSelect.addEventListener("change", (e) => {
+          const selectedType = e.target.value;
+
+          if (selectedType === "essencial") {
+            essentialCard.classList.remove("featured");
+            plusCard.classList.add("featured");
+            essentialCard.style.order = "1";
+            plusCard.style.order = "2";
+            essentialCard.querySelector(".btn").textContent = "Continuar para pagamento";
+            if (planNameEl) planNameEl.textContent = "Essencial";
+            if (selectedPlanDescription) selectedPlanDescription.textContent = "Para experimentar o controle financeiro sem compromisso.";
+            if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 19,90 <small>/ mês</small>";
+          }
+          else if (selectedType === "plus") {
+            essentialCard.classList.add("featured");
+            plusCard.classList.remove("featured");
+            essentialCard.style.order = "2";
+            plusCard.style.order = "1";
+            essentialCard.querySelector(".btn").textContent = "Contratar Plus";
+            if (planNameEl) planNameEl.textContent = "Plus - Educação Premium";
+            if (selectedPlanDescription) selectedPlanDescription.textContent = "Educação personalizada + Controle financeiro completo.";
+            if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 39,90 <small>/ mês</small>";
+          }
+          else if (selectedType === "bundle") {
+            essentialCard.classList.remove("featured");
+            plusCard.classList.add("featured");
+            essentialCard.style.order = "1";
+            plusCard.style.order = "2";
+            essentialCard.querySelector(".btn").textContent = "Contratar Bundle";
+            if (planNameEl) planNameEl.textContent = "Essencial + Plus Bundle";
+            if (selectedPlanDescription) selectedPlanDescription.textContent = "Economia de 15% ao contratar ambos os planos juntos. Acesso completo a controle financeiro e educação personalizada.";
+            if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 50,83 <small>/ mês (economize R$ 8,97)</small>";
+          }
+        });
+      }
       pricingCheckout.addEventListener("click", () => {
         paymentModal.hidden = false;
         paymentPlan.textContent = `Plano selecionado: ${selectedPlan}`;
