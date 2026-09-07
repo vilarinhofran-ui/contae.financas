@@ -1615,6 +1615,35 @@
         max-width: 780px;
         margin: 0 auto;
       }
+      .pricing-selector {
+        margin-bottom: 48px;
+        padding: 24px;
+        background: linear-gradient(135deg, rgba(62, 224, 160, 0.06), rgba(20, 121, 235, 0.06));
+        border-radius: 10px;
+        border: 1px solid rgba(62, 224, 160, 0.12);
+      }
+      .pricing-selector label {
+        display: block;
+        margin-bottom: 12px;
+        color: #71809b;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      .pricing-selector .app-select {
+        background: white;
+        border: 1.5px solid var(--line);
+        box-shadow: 0 4px 12px rgba(18, 48, 95, 0.06);
+        transition: all 0.25s ease;
+      }
+      .pricing-selector .app-select:hover {
+        border-color: var(--blue);
+        box-shadow: 0 6px 16px rgba(20, 121, 235, 0.12);
+      }
+      .pricing-selector .app-select:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(20, 121, 235, 0.1);
+      }
       .price-card {
         position: relative;
         display: flex;
@@ -1790,6 +1819,26 @@
         display: block;
         margin-bottom: 4px;
         color: var(--mint);
+      }
+      #course-examples {
+        --shadow-sm: 0 4px 12px rgba(18, 48, 95, 0.06);
+      }
+      #course-examples > div {
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      #course-examples > div:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(18, 48, 95, 0.12);
+      }
+      #course-examples > div strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      #course-examples > div p {
+        margin: 8px 0 0;
+        font-size: 0.75rem;
       }
       .admin-section {
         display: none;
@@ -3919,31 +3968,34 @@
           const selectedType = e.target.value;
 
           if (selectedType === "essencial") {
-            essentialCard.classList.remove("featured");
-            plusCard.classList.add("featured");
-            essentialCard.style.order = "1";
-            plusCard.style.order = "2";
-            essentialCard.querySelector(".btn").textContent = "Continuar para pagamento";
+            if (essentialCard) essentialCard.classList.remove("featured");
+            if (plusCard) plusCard.classList.add("featured");
+            if (essentialCard) essentialCard.style.order = "1";
+            if (plusCard) plusCard.style.order = "2";
+            const btnEssential = essentialCard?.querySelector(".btn");
+            if (btnEssential) btnEssential.textContent = "Continuar para pagamento";
             if (planNameEl) planNameEl.textContent = "Essencial";
             if (selectedPlanDescription) selectedPlanDescription.textContent = "Para experimentar o controle financeiro sem compromisso.";
             if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 19,90 <small>/ mês</small>";
           }
           else if (selectedType === "plus") {
-            essentialCard.classList.add("featured");
-            plusCard.classList.remove("featured");
-            essentialCard.style.order = "2";
-            plusCard.style.order = "1";
-            essentialCard.querySelector(".btn").textContent = "Contratar Plus";
+            if (essentialCard) essentialCard.classList.add("featured");
+            if (plusCard) plusCard.classList.remove("featured");
+            if (essentialCard) essentialCard.style.order = "2";
+            if (plusCard) plusCard.style.order = "1";
+            const btnEssential = essentialCard?.querySelector(".btn");
+            if (btnEssential) btnEssential.textContent = "Contratar Plus";
             if (planNameEl) planNameEl.textContent = "Plus - Educação Premium";
             if (selectedPlanDescription) selectedPlanDescription.textContent = "Educação personalizada + Controle financeiro completo.";
             if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 39,90 <small>/ mês</small>";
           }
           else if (selectedType === "bundle") {
-            essentialCard.classList.remove("featured");
-            plusCard.classList.add("featured");
-            essentialCard.style.order = "1";
-            plusCard.style.order = "2";
-            essentialCard.querySelector(".btn").textContent = "Contratar Bundle";
+            if (essentialCard) essentialCard.classList.remove("featured");
+            if (plusCard) plusCard.classList.add("featured");
+            if (essentialCard) essentialCard.style.order = "1";
+            if (plusCard) plusCard.style.order = "2";
+            const btnEssential = essentialCard?.querySelector(".btn");
+            if (btnEssential) btnEssential.textContent = "Contratar Bundle";
             if (planNameEl) planNameEl.textContent = "Essencial + Plus Bundle";
             if (selectedPlanDescription) selectedPlanDescription.textContent = "Economia de 15% ao contratar ambos os planos juntos. Acesso completo a controle financeiro e educação personalizada.";
             if (selectedPlanPrice) selectedPlanPrice.innerHTML = "R$ 50,83 <small>/ mês (economize R$ 8,97)</small>";
