@@ -738,6 +738,8 @@
       .tour-sidebar { padding: 16px 10px; color: #afbed3; background: var(--navy); font-size: 0.66rem; }
       .tour-sidebar strong { display: block; margin-bottom: 18px; color: var(--mint); font-family: "Space Grotesk", sans-serif; }
       .tour-sidebar span { display: block; margin: 12px 0; }
+      .tour-sidebar button { display: block; width: 100%; margin: 8px 0; padding: 7px 6px; border-radius: 5px; color: inherit; background: transparent; text-align: left; font: inherit; }
+      .tour-sidebar button:hover, .tour-sidebar button.active { color: var(--white); background: #123262; }
       .tour-content { padding: 22px; }
       .tour-content h3 { font-size: 1.25rem; }
       .tour-content p { color: var(--muted); font-size: 0.75rem; }
@@ -745,6 +747,7 @@
       @keyframes tour-pulse { 0%, 100% { opacity: 0.7; transform: scaleX(0.96); } 50% { opacity: 1; transform: scaleX(1); } }
       .simulator { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
       .simulator-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.68rem; font-weight: 700; }
+      .simulator-title { display: inline-block; margin-bottom: 6px; color: var(--blue); font-family: "Space Grotesk", sans-serif; font-size: 0.78rem; font-weight: 700; }
       .simulator-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
       .simulator-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
       .simulator-result div { padding: 9px; border-radius: 7px; background: #f4f8fd; font-size: 0.66rem; }
@@ -2002,7 +2005,7 @@
       <div class="container">
         <div class="section-head"><div><div class="section-kicker">Veja por dentro</div><h2>Uma jornada que acompanha você.</h2></div><p>Explore o dashboard, lançamentos, objetivos e Renda+ em uma experiência simples e organizada.</p></div>
         <div class="tour-stage" aria-label="Prévia animada dos módulos do CONTAÊ">
-          <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><span>■ Visão geral</span><span>↑ Entradas</span><span>↓ Saídas</span><span>★ Objetivos</span><span>＋ Renda+</span></div><div class="tour-content"><h3>Seu próximo passo fica claro.</h3><p>Veja saldo, organize lançamentos e transforme objetivos em ações.</p><div class="tour-preview"></div><div class="simulator"><span class="simulator-label">Simulador público · seus dados não são salvos</span><form class="simulator-form" id="public-simulator"><input class="app-input" id="sim-income" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Entrada (R$)" /><input class="app-input" id="sim-expense" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saída (R$)" /><button class="btn btn-primary" type="submit">Simular</button></form><div class="simulator-result"><div>Entrada<strong id="sim-income-result">+ R$ 0,00</strong></div><div>Saída<strong id="sim-expense-result">- R$ 0,00</strong></div><div>Saldo<strong id="sim-balance-result">= R$ 0,00</strong></div></div><button class="simulator-clear" id="sim-clear" type="button">Zerar simulação</button><p class="simulator-disclaimer">Demonstração isolada: não acessa, altera ou compartilha dados de usuários.</p></div></div></div>
+          <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><button class="active" type="button" data-tour-module="overview">■ Visão geral</button><button type="button" data-tour-module="income">↑ Entradas</button><button type="button" data-tour-module="expenses">↓ Saídas</button><button type="button" data-tour-module="goals">★ Objetivos</button><button type="button" data-tour-module="income-plus">＋ Renda+</button><button type="button" data-tour-module="settings">⚙ Configurações</button></div><div class="tour-content"><span class="simulator-title">Simulador público do ContaÊ</span><h3 id="tour-module-title">Seu próximo passo fica claro.</h3><p id="tour-module-description">Veja saldo, organize lançamentos e transforme objetivos em ações.</p><div class="tour-preview"></div><div class="simulator"><span class="simulator-label">Experimente sem criar conta · seus dados não são salvos</span><form class="simulator-form" id="public-simulator"><input class="app-input" id="sim-income" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Entrada (R$)" /><input class="app-input" id="sim-expense" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saída (R$)" /><button class="btn btn-primary" type="submit">Simular</button></form><div class="simulator-result"><div>Entrada<strong id="sim-income-result">+ R$ 0,00</strong></div><div>Saída<strong id="sim-expense-result">- R$ 0,00</strong></div><div>Saldo<strong id="sim-balance-result">= R$ 0,00</strong></div></div><button class="simulator-clear" id="sim-clear" type="button">Zerar simulação</button><p class="simulator-disclaimer">Demonstração isolada: não acessa, altera ou compartilha dados de usuários.</p></div></div></div>
         </div>
       </div>
     </section>
@@ -2919,10 +2922,30 @@
       const simExpenseResult = document.querySelector("#sim-expense-result");
       const simBalanceResult = document.querySelector("#sim-balance-result");
       const simClear = document.querySelector("#sim-clear");
+      const tourModuleTitle = document.querySelector("#tour-module-title");
+      const tourModuleDescription = document.querySelector("#tour-module-description");
+      const tourModules = {
+        overview: ["Seu próximo passo fica claro.", "Veja saldo, organize lançamentos e transforme objetivos em ações."],
+        income: ["Entenda de onde vem sua renda.", "Acompanhe entradas, fontes e evolução financeira."],
+        expenses: ["Saiba para onde seu dinheiro vai.", "Organize saídas, categorias e oportunidades de economia."],
+        goals: ["Transforme planos em metas.", "Acompanhe progresso, prazos e próximos aportes."],
+        "income-plus": ["Descubra possibilidades de Renda+.", "Explore habilidades e oportunidades alinhadas ao seu momento."],
+        settings: ["Configure do seu jeito.", "Preferências, privacidade e notificações em um só lugar."],
+      };
       let deferredInstallPrompt;
       let selectedPlan = "Mensal";
       let profileMode = "create";
       const simulatorState = { income: 0, expense: 0 };
+
+      document.querySelectorAll("[data-tour-module]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-tour-module]").forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          const content = tourModules[button.dataset.tourModule];
+          tourModuleTitle.textContent = content[0];
+          tourModuleDescription.textContent = content[1];
+        });
+      });
 
       if (
         window.location.hostname === "localhost" ||
