@@ -224,6 +224,33 @@
         height: 2px;
         background: var(--mint);
       }
+      .typewriter-word {
+        display: inline-block;
+        position: relative;
+        min-width: 50px;
+      }
+      .typewriter-word::after {
+        content: "";
+        position: absolute;
+        right: -3px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--mint);
+        animation: blink 0.6s step-end infinite;
+      }
+      @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      @keyframes type {
+        from { width: 0; }
+        to { width: 100%; }
+      }
+      @keyframes erase {
+        from { width: 100%; }
+        to { width: 0; }
+      }
       h1,
       h2,
       h3 {
@@ -2136,7 +2163,7 @@
 
       <main id="inicio" class="container hero-content">
         <div>
-          <div class="eyebrow">Sua evolução começa aqui</div>
+          <div class="eyebrow">Sua <span class="typewriter-word" id="typewriter"></span> começa aqui</div>
           <h1>Dinheiro sob controle. <em>Vida em movimento.</em></h1>
           <p class="hero-copy">
             Acompanhe suas entradas, gastos e objetivos com clareza. Sem burocracia, sem susto. Organize sua vida financeira em um único painel.
@@ -3086,6 +3113,60 @@
         >
       </div>
     </footer>
+
+    <script>
+      const typewriterWords = [
+        "Entradas",
+        "Equilíbrio",
+        "Evolução",
+        "Estratégia",
+        "Economia",
+        "Expansão",
+        "Esperança",
+        "Empoderamento",
+        "Excelência",
+        "Estabilidade",
+        "Experiência"
+      ];
+
+      function typewriterEffect() {
+        const typewriterEl = document.querySelector("#typewriter");
+        if (!typewriterEl) return;
+
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isTyping = true;
+
+        function type() {
+          const currentWord = typewriterWords[wordIndex];
+
+          if (isTyping) {
+            if (charIndex < currentWord.length) {
+              typewriterEl.textContent = currentWord.slice(0, charIndex + 1);
+              charIndex++;
+              setTimeout(type, 80);
+            } else {
+              isTyping = false;
+              setTimeout(type, 1800);
+            }
+          } else {
+            if (charIndex > 0) {
+              typewriterEl.textContent = currentWord.slice(0, charIndex - 1);
+              charIndex--;
+              setTimeout(type, 50);
+            } else {
+              isTyping = true;
+              wordIndex = (wordIndex + 1) % typewriterWords.length;
+              setTimeout(type, 400);
+            }
+          }
+        }
+
+        type();
+      }
+
+      document.addEventListener("DOMContentLoaded", typewriterEffect);
+    </script>
 
     <script>
       const menuToggle = document.querySelector("#menu-toggle");
