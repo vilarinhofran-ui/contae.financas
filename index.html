@@ -2379,39 +2379,21 @@
         </div>
         <div class="pricing-grid">
           <article class="price-card">
-            <h3>Mensal</h3>
-            <p>Para experimentar o controle financeiro sem compromisso.</p>
-            <div class="price">R$ 19,90 <small>/ mês</small></div>
+            <h3>Escolha seu plano</h3>
+            <p id="selected-plan-description">Para experimentar o controle financeiro sem compromisso.</p>
+            <select class="app-select" id="pricing-plan-select" aria-label="Selecionar plano">
+              <option value="Mensal">Mensal - R$ 19,90 / mês</option>
+              <option value="Anual">Anual - R$ 178,80 / ano</option>
+            </select>
+            <div class="price" id="selected-plan-price">R$ 19,90 <small>/ mês</small></div>
             <ul class="price-list">
               <li>Dashboard completo</li>
               <li>Objetivos personalizados</li>
-              <li>Curso essencial</li>
+              <li>Lançamentos e saldos organizados</li>
+              <li>Curso personalizado</li>
+              <li id="selected-plan-extra">Acesso mensal sem compromisso</li>
             </ul>
-            <label class="plan-radio"
-              ><input type="radio" name="subscription-plan" value="Mensal" />
-              Selecionar mensal</label
-            >
-            <button class="btn btn-outline plan-button" data-plan="Mensal">
-              Continuar com mensal
-            </button>
-          </article>
-          <article class="price-card">
-            <span class="popular">Melhor valor</span>
-            <h3>Anual</h3>
-            <p>Para quem quer transformar o ano inteiro em evolução.</p>
-            <div class="price">R$ 178,80 <small>/ ano</small></div>
-            <ul class="price-list">
-              <li>Tudo do Mensal</li>
-              <li>Relatórios anuais</li>
-              <li>2 meses de economia</li>
-            </ul>
-            <label class="plan-radio"
-              ><input type="radio" name="subscription-plan" value="Anual" />
-              Selecionar anual</label
-            >
-            <button class="btn btn-primary plan-button" data-plan="Anual">
-              Continuar com anual
-            </button>
+            <button class="btn btn-primary" id="pricing-checkout" type="button">Continuar para pagamento</button>
           </article>
         </div>
       </div>
@@ -2833,6 +2815,11 @@
       const proofFile = document.querySelector("#proof-file");
       const paymentFeedback = document.querySelector("#payment-feedback");
       const approveProof = document.querySelector("#approve-proof");
+      const pricingPlanSelect = document.querySelector("#pricing-plan-select");
+      const pricingCheckout = document.querySelector("#pricing-checkout");
+      const selectedPlanDescription = document.querySelector("#selected-plan-description");
+      const selectedPlanPrice = document.querySelector("#selected-plan-price");
+      const selectedPlanExtra = document.querySelector("#selected-plan-extra");
       const adminSection = document.querySelector("#admin");
       const bankSelect = document.querySelector("#transaction-bank-select");
       const saveStatus = document.querySelector("#save-status");
@@ -3152,33 +3139,22 @@
           showModule(button.dataset.module);
         });
       });
-      document.querySelectorAll(".plan-button").forEach((button) => {
-        button.addEventListener("click", () => {
-          document
-            .querySelectorAll(".price-card")
-            .forEach((card) => card.classList.remove("selected"));
-          const card = button.closest(".price-card");
-          card.classList.add("selected");
-          card.querySelector('input[name="subscription-plan"]').checked = true;
-          selectedPlan = button.dataset.plan;
-          paymentModal.hidden = false;
-          paymentPlan.textContent = `Plano selecionado: ${button.dataset.plan}`;
-          paymentFeedback.textContent = "";
-          proofFile.value = "";
-          copyPix.focus();
-        });
+      pricingPlanSelect.addEventListener("change", () => {
+        selectedPlan = pricingPlanSelect.value;
+        const annual = selectedPlan === "Anual";
+        selectedPlanDescription.textContent = annual
+          ? "Para transformar o ano inteiro em evolução."
+          : "Para experimentar o controle financeiro sem compromisso.";
+        selectedPlanPrice.innerHTML = annual ? "R$ 178,80 <small>/ ano</small>" : "R$ 19,90 <small>/ mês</small>";
+        selectedPlanExtra.textContent = annual ? "Relatórios anuais e 2 meses de economia" : "Acesso mensal sem compromisso";
       });
-      document
-        .querySelectorAll('input[name="subscription-plan"]')
-        .forEach((input) => {
-          input.addEventListener("change", () => {
-            document
-              .querySelectorAll(".price-card")
-              .forEach((card) => card.classList.remove("selected"));
-            input.closest(".price-card").classList.add("selected");
-            selectedPlan = input.value;
-          });
-        });
+      pricingCheckout.addEventListener("click", () => {
+        paymentModal.hidden = false;
+        paymentPlan.textContent = `Plano selecionado: ${selectedPlan}`;
+        paymentFeedback.textContent = "Escolha Pix ou solicite um link parcelado para concluir o pagamento.";
+        proofFile.value = "";
+        copyPix.focus();
+      });
       const closePayment = () => {
         paymentModal.hidden = true;
       };
