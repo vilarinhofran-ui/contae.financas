@@ -759,7 +759,21 @@
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--white);
+        box-shadow: 0 8px 22px rgba(18, 48, 95, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
+      .metric:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(18, 48, 95, 0.1); }
+      .metric.balance-metric {
+        grid-column: span 2;
+        padding: 20px;
+        border-color: transparent;
+        color: var(--white);
+        background: linear-gradient(120deg, #126dde, #0750b9);
+        box-shadow: 0 14px 30px rgba(7, 80, 185, 0.22);
+      }
+      .metric.balance-metric small { color: rgba(255, 255, 255, 0.76); text-transform: uppercase; letter-spacing: 0.08em; }
+      .metric.balance-metric strong { color: var(--white); font-size: 1.8rem; }
+      .metric.balance-metric::after { content: "Disponível para sua jornada"; display: block; margin-top: 6px; color: rgba(255, 255, 255, 0.7); font-size: 0.68rem; }
       .metric small {
         color: var(--muted);
         font-size: 0.67rem;
@@ -788,6 +802,7 @@
         border: 1px solid var(--line);
         border-radius: 9px;
         background: var(--white);
+        box-shadow: 0 8px 24px rgba(18, 48, 95, 0.05);
       }
       .app-card h4 {
         margin: 0 0 15px;
@@ -1756,6 +1771,7 @@
         .metrics {
           grid-template-columns: repeat(2, 1fr);
         }
+        .metric.balance-metric { grid-column: 1 / -1; }
         .app-grid {
           grid-template-columns: 1fr;
         }
@@ -2092,7 +2108,7 @@
               </div>
             </div>
             <div class="metrics">
-              <div class="metric blue">
+              <div class="metric blue balance-metric">
                 <small>Saldo consolidado</small
                 ><strong id="total-balance">= R$ 0,00</strong>
               </div>
