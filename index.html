@@ -720,6 +720,9 @@
       .goal-analysis strong { color: #164e40; }
       .goal-steps { margin: 9px 0 0; padding-left: 18px; }
       .goal-steps li { margin: 4px 0; }
+      .goal-history { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.68rem; }
+      .goal-history-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #edf2f7; }
+      .goal-history-row strong { color: #0a9b70; }
       .privacy-consent { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); font-size: 0.68rem; line-height: 1.45; }
       .privacy-consent input { flex: 0 0 auto; margin-top: 2px; accent-color: var(--blue); }
       .privacy-consent a { color: var(--blue); text-decoration: underline; }
@@ -2224,6 +2227,12 @@
                   <button class="btn btn-primary" type="submit">Calcular</button>
                 </form>
                 <div class="goal-analysis" id="goal-analysis">Escolha um objetivo, informe o valor necessário e o prazo para receber uma análise realista.</div>
+                <form class="goal-form" id="goal-contribution-form">
+                  <input class="app-input" id="goal-contribution" type="number" min="0.01" step="0.01" placeholder="Aporte (R$)" inputmode="decimal" required />
+                  <input class="app-input" id="goal-contribution-date" type="date" required />
+                  <button class="btn btn-outline" type="submit">Registrar aporte</button>
+                </form>
+                <div class="goal-history" id="goal-history">Nenhum aporte confirmado ainda.</div>
                 <div class="goal-row">
                   <div class="goal-name">
                     <span>&#127968;</span
@@ -2945,6 +2954,10 @@
       const goalTarget = document.querySelector("#goal-target");
       const goalMonths = document.querySelector("#goal-months");
       const goalAnalysis = document.querySelector("#goal-analysis");
+      const goalContributionForm = document.querySelector("#goal-contribution-form");
+      const goalContribution = document.querySelector("#goal-contribution");
+      const goalContributionDate = document.querySelector("#goal-contribution-date");
+      const goalHistory = document.querySelector("#goal-history");
       const tourModuleTitle = document.querySelector("#tour-module-title");
       const tourModuleDescription = document.querySelector("#tour-module-description");
       const tourModules = {
@@ -3013,14 +3026,33 @@
           return;
         }
         const monthly = target / months;
+        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        const contributed = contributions.reduce((sum, item) => sum + item.value, 0);
         const available = Math.max(income - expense, 0);
+        const adherence = target ? Math.min((contributed / target) * 100, 100) : 0;
         const feasible = available >= monthly;
         const feeling = feasible ? "cenário possível e controlável" : "cenário que pede ajustes graduais";
-        goalAnalysis.innerHTML = `<strong>${goalType.value}</strong><br>Para alcançar ${formatCurrency(target)} em ${months} meses, a reserva necessária é de aproximadamente <strong>${formatCurrency(monthly)}/mês</strong>.<br><strong>Cenário atual:</strong> ${available ? `seu resultado disponível estimado é ${formatCurrency(available)}/mês.` : "ainda não há resultado financeiro calculado."}<br><strong>Sentimento:</strong> ${feeling}.<ol class="goal-steps"><li>Registre entradas e saídas por 7 dias.</li><li>Separe ${formatCurrency(monthly)} no início de cada período.</li><li>Revise o progresso no próximo login e ajuste o ritmo sem comprometer despesas essenciais.</li></ol>`;
+        goalAnalysis.innerHTML = `<strong>${goalType.value}</strong><br>Para alcançar ${formatCurrency(target)} em ${months} meses, a reserva necessária é de aproximadamente <strong>${formatCurrency(monthly)}/mês</strong>.<br><strong>Aderência:</strong> ${adherence.toFixed(0)}% (${formatCurrency(contributed)} acumulado).<br><strong>Cenário atual:</strong> ${available ? `seu resultado disponível estimado é ${formatCurrency(available)}/mês.` : "ainda não há resultado financeiro calculado."}<br><strong>Sentimento:</strong> ${feeling}.<ol class="goal-steps"><li>Registre entradas e saídas por 7 dias.</li><li>Confirme aportes somente após realizar o pagamento.</li><li>Revise o progresso no próximo login e ajuste o ritmo sem comprometer despesas essenciais.</li></ol>`;
       };
       goalForm.addEventListener("submit", (event) => { event.preventDefault(); renderGoalAnalysis(); localStorage.setItem("contae-goal", JSON.stringify({ type: goalType.value, target: goalTarget.value, months: goalMonths.value })); });
       const savedGoal = JSON.parse(localStorage.getItem("contae-goal") || "null");
       if (savedGoal) { goalType.value = savedGoal.type; goalTarget.value = savedGoal.target; goalMonths.value = savedGoal.months; renderGoalAnalysis(); }
+      const renderGoalHistory = () => {
+        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        goalHistory.innerHTML = contributions.length ? contributions.map((item) => `<div class="goal-history-row"><span>${item.date}</span><strong>+ ${formatCurrency(item.value)} · Confirmado</strong></div>`).join("") : "Nenhum aporte confirmado ainda.";
+      };
+      goalContributionForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const value = Number(goalContribution.value);
+        if (!value || !goalContributionDate.value) return;
+        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        contributions.push({ value, date: goalContributionDate.value, confirmedAt: new Date().toISOString() });
+        localStorage.setItem("contae-goal-contributions", JSON.stringify(contributions));
+        goalContributionForm.reset();
+        renderGoalHistory();
+        renderGoalAnalysis();
+      });
+      renderGoalHistory();
 
       menuToggle.addEventListener("click", () => {
         const isOpen = navLinks.classList.toggle("open");
@@ -3304,7 +3336,7 @@
           : [["Saldo atual", money(income - expense)], ["Entradas", money(income)], ["Saídas", money(expense)]];
         let body = "";
         if (module === "income-plus") body = `<div class="module-panels"><div class="module-panel"><h4>Questionário estratégico</h4><p>Conte sobre suas habilidades, tempo disponível, objetivo e preferência por renda online ou presencial.</p><button class="btn btn-primary module-action" id="income-questionnaire" type="button">Começar questionário</button></div><div class="module-panel"><h4>Possibilidade identificada</h4><div class="insight opportunity">Adicione informações ao seu perfil para receber recomendações personalizadas, sem promessas de ganhos.</div></div></div>`;
-        else if (module === "goals") body = `<div class="module-panels"><div class="module-panel"><h4>Objetivos em andamento</h4><div class="goal-row"><span>Reserva de emergência</span><strong>68%</strong></div><div class="goal-row"><span>Viagem em julho</span><strong>42%</strong></div></div><div class="module-panel"><h4>Recomendação</h4><div class="insight">Adicione aportes e prazos para calcular quanto reservar por mês.</div></div></div>`;
+        else if (module === "goals") { const savedGoal = JSON.parse(localStorage.getItem("contae-goal") || "null"); const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]"); const contributed = contributions.reduce((sum, item) => sum + item.value, 0); const target = savedGoal ? Number(savedGoal.target) : 0; const adherence = target ? Math.min((contributed / target) * 100, 100).toFixed(0) : "0"; body = `<div class="module-panels"><div class="module-panel"><h4>Objetivo cadastrado</h4>${savedGoal ? `<div class="goal-row"><span>${savedGoal.type}</span><strong>${adherence}%</strong></div><p>${formatCurrency(contributed)} de ${formatCurrency(target)} acumulado.</p>` : `<div class="empty-state">Nenhum objetivo cadastrado. Cadastre um objetivo na Visão Geral para acompanhar a aderência.</div>`}</div><div class="module-panel"><h4>Análise de cenário</h4><div class="insight">${savedGoal ? "Aderência atualizada pelos aportes confirmados e pelo prazo informado." : "Adicione um objetivo e aportes para receber recomendações realistas."}</div></div></div>`; }
         else if (module === "settings") body = `<div class="module-panels"><div class="module-panel"><h4>Conta e preferências</h4><p>Use Editar perfil para atualizar seus dados. Categorias, limites, notificações e privacidade ficarão disponíveis nesta área.</p></div><div class="module-panel"><h4>Estado vazio</h4><div class="empty-state">Nenhuma preferência personalizada cadastrada ainda.</div></div></div>`;
         else body = `<div class="module-panels"><div class="module-panel"><h4>Resumo inteligente</h4><div class="insight">${totalTransactions ? `Análise baseada em ${totalTransactions} lançamento(s) registrado(s) nesta sessão.` : "Adicione mais informações para gerar uma análise personalizada."}</div></div><div class="module-panel"><h4>Visualização do período</h4><div class="empty-state">Gráfico disponível quando houver dados suficientes.</div></div></div>`;
         return `<div class="module-header"><div><div class="section-kicker">Módulo CONTAÊ</div><h2>${title}</h2><p>${description}</p></div><select class="period-filter" aria-label="Filtrar período"><option>Este mês</option><option>Hoje</option><option>Últimos 3 meses</option><option>Este ano</option><option>Personalizado</option></select></div><div class="module-kpis">${kpis.map(([label, value]) => `<div class="module-kpi"><small>${label}</small><strong>${value}</strong></div>`).join("")}</div>${body}`;
