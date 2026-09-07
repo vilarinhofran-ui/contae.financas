@@ -758,6 +758,8 @@
       .reminder-actions { display: flex; gap: 7px; flex: 0 0 auto; }
       .reminder-actions button { padding: 8px 10px; border-radius: 6px; color: #765317; background: #ffe4a8; font-size: 0.67rem; font-weight: 700; }
       .reminder-actions button:last-child { border: 1px solid #e2c982; background: transparent; }
+      .subscription-reminder { border-color: #b9d2ef; background: #f4f9ff; color: #315778; }
+      .subscription-reminder strong { color: #173e63; }
       .whatsapp-float { position: fixed; right: 20px; bottom: 20px; z-index: 8; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: white; background: #19b86d; box-shadow: 0 10px 25px rgba(25, 184, 109, 0.3); font-size: 1.45rem; }
       .whatsapp-float:hover { transform: translateY(-3px); }
       .tour-section { padding: 86px 0; background: #edf5ff; }
@@ -2251,6 +2253,10 @@
               <div><strong>Atualizar lançamentos</strong><span>Você tem dias anteriores sem lançamentos registrados.</span></div>
               <div class="reminder-actions"><button id="reminder-update" type="button">Atualizar agora</button><button id="reminder-ok" type="button">Tudo em ordem</button></div>
             </div>
+            <div class="update-reminder subscription-reminder" id="subscription-reminder" hidden>
+              <div><strong id="subscription-reminder-title">Renovação da assinatura</strong><span id="subscription-reminder-copy"></span></div>
+              <div class="reminder-actions"><button id="subscription-renew" type="button">Renovar agora</button></div>
+            </div>
             <div class="app-topline">
               <div>
                 <div class="demo-badge" id="demo-mode-badge">Modo demonstração · dados salvos neste navegador</div>
@@ -2593,6 +2599,7 @@
             Comece com liberdade e evolua quando fizer sentido. Todos os planos
             incluem dashboard, objetivos, lançamentos e curso personalizado.
           </p>
+          <p class="payment-feedback" id="subscription-expired-notice" role="status" hidden></p>
         </div>
         <div class="pricing-grid">
           <article class="price-card">
@@ -2896,9 +2903,9 @@
           </button>
         </div>
         <div class="payment-panel" id="pix-panel">
-          <strong>Pagamento via WhatsApp</strong>
-          <p>Solicite o link de pagamento Pix ou parcelado pelo WhatsApp.</p>
-          <a class="btn btn-primary whatsapp-link" href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20um%20link%20de%20pagamento%20do%20CONTAÊ." target="_blank" rel="noopener">&#9742; Solicitar pagamento</a>
+          <strong>Pagamento via Pix</strong>
+          <p>Solicite seu link Pix. A assinatura é válida por 30 dias após a confirmação no gateway.</p>
+          <a class="btn btn-primary whatsapp-link" href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20o%20Pix%20para%20assinar%20o%20CONTAÊ." target="_blank" rel="noopener">&#9742; Solicitar Pix</a>
         </div>
         <div class="payment-panel" id="link-panel" hidden>
           <strong>Link de pagamento parcelado</strong>
@@ -2906,9 +2913,7 @@
             Solicite um link seguro para escolher cartão e número de parcelas. O
             link real será gerado pelo gateway de pagamento.
           </p>
-          <button class="btn btn-primary" id="request-link" type="button">
-            Solicitar link
-          </button>
+          <a class="btn btn-primary" id="request-link" href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20um%20link%20parcelado%20para%20assinar%20o%20CONTAÊ." target="_blank" rel="noopener">&#9742; Solicitar link parcelado</a>
         </div>
         <label class="proof-label" for="proof-file"
           >Enviar comprovante de pagamento</label
@@ -2924,16 +2929,7 @@
           role="status"
           aria-live="polite"
         ></div>
-        <p class="payment-feedback">
-          Após a confirmação do pagamento, o acesso será liberado em até 1 hora.
-        </p>
-        <a
-          class="whatsapp-link"
-          href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20um%20link%20de%20pagamento%20do%20CONTAÊ."
-          target="_blank"
-          rel="noopener"
-          >&#9742; Solicitar link de pagamento pelo WhatsApp</a
-        >
+        <p class="payment-feedback">Após a confirmação do pagamento pelo gateway, a assinatura e a data de renovação serão atualizadas no servidor.</p>
       </section>
     </div>
 
@@ -3041,6 +3037,11 @@
       const updateReminder = document.querySelector("#update-reminder");
       const reminderUpdate = document.querySelector("#reminder-update");
       const reminderOk = document.querySelector("#reminder-ok");
+      const subscriptionReminder = document.querySelector("#subscription-reminder");
+      const subscriptionReminderTitle = document.querySelector("#subscription-reminder-title");
+      const subscriptionReminderCopy = document.querySelector("#subscription-reminder-copy");
+      const subscriptionRenew = document.querySelector("#subscription-renew");
+      const subscriptionExpiredNotice = document.querySelector("#subscription-expired-notice");
       const storageKey = "contae-transactions";
       const profileModal = document.querySelector("#profile-modal");
       const profileForm = document.querySelector("#profile-form");
@@ -3112,6 +3113,28 @@
       const simulatorState = { income: 0, expense: 0 };
       simulatorLabel.textContent = "Simulação isolada nesta aba · seus dados não são salvos nem compartilhados";
       const hasActiveSubscription = () => sessionStorage.getItem("contae-subscription-status") === "active";
+      const getSubscriptionExpiry = () => {
+        const value = sessionStorage.getItem("contae-subscription-expires-at");
+        const expiry = value ? new Date(value) : null;
+        return expiry && !Number.isNaN(expiry.getTime()) ? expiry : null;
+      };
+      const isSubscriptionExpired = () => hasActiveSubscription() && Boolean(getSubscriptionExpiry()) && getSubscriptionExpiry() <= new Date();
+      const updateSubscriptionReminder = () => {
+        const expiry = getSubscriptionExpiry();
+        if (!hasActiveSubscription() || !expiry || isSubscriptionExpired()) {
+          subscriptionReminder.hidden = true;
+          return;
+        }
+        const daysRemaining = Math.ceil((expiry - new Date()) / 86400000);
+        subscriptionReminder.hidden = daysRemaining > 7;
+        if (!subscriptionReminder.hidden) {
+          subscriptionReminderTitle.textContent = "Renove sua assinatura";
+          subscriptionReminderCopy.textContent = `Sua assinatura vence em ${daysRemaining} dia${daysRemaining === 1 ? "" : "s"}. Renove para manter o acesso aos seus dados.`;
+        }
+      };
+      subscriptionRenew.addEventListener("click", () => {
+        window.location.hash = "planos";
+      });
       const safeParse = (key, fallback) => {
         if (!hasActiveSubscription()) return key === "contae-income-profile" ? transientIncomeProfile || fallback : fallback;
         try {
@@ -3578,7 +3601,7 @@
         const isOverview = module === "overview";
         moduleHost.hidden = isOverview;
         [...appMain.children].forEach((child) => {
-          if (child !== moduleHost && child.id !== "demo-mode-badge") child.hidden = !isOverview;
+          if (child !== moduleHost && child.id !== "demo-mode-badge" && child.id !== "subscription-reminder") child.hidden = !isOverview;
         });
         if (!isOverview) {
           moduleHost.innerHTML = moduleMarkup(module);
@@ -3796,10 +3819,21 @@
           window.location.hash = "inicio";
           return;
         }
+        if (route === "app" && isSubscriptionExpired()) {
+          sessionStorage.removeItem("contae-authenticated");
+          sessionStorage.setItem("contae-subscription-expired", "1");
+          window.location.hash = "planos";
+          return;
+        }
         if (route === "app" && !authenticated) {
           sessionStorage.setItem("contae-authenticated", "1");
         }
         document.body.classList.toggle("dashboard-mode", route === "app");
+        updateSubscriptionReminder();
+        subscriptionExpiredNotice.hidden = route !== "planos" || sessionStorage.getItem("contae-subscription-expired") !== "1";
+        if (!subscriptionExpiredNotice.hidden) {
+          subscriptionExpiredNotice.textContent = "Sua assinatura Pix de 30 dias venceu. Renove para recuperar o acesso aos recursos de assinante.";
+        }
         if (route === "app") {
           const module = appRouteModules[appRoute] || "overview";
           document.querySelectorAll(".side-nav button[data-module]").forEach((button) => {
