@@ -696,6 +696,25 @@
         padding: 28px;
         background: #fbfdff;
       }
+      .module-host[hidden] { display: none; }
+      .module-host { animation: module-in 0.22s ease both; }
+      @keyframes module-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      .module-header { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 22px; }
+      .module-header h2 { margin-top: 7px; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+      .module-header p { max-width: 360px; margin: 0; color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+      .period-filter { min-width: 145px; padding: 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--white); font: inherit; font-size: 0.72rem; }
+      .module-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+      .module-kpi { padding: 15px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+      .module-kpi small { color: var(--muted); font-size: 0.67rem; }
+      .module-kpi strong { display: block; margin-top: 6px; font-family: "Space Grotesk", sans-serif; font-size: 1.15rem; }
+      .module-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .module-panel { padding: 18px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+      .module-panel h4 { margin: 0 0 12px; font-family: "Space Grotesk", sans-serif; }
+      .module-panel p { color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+      .empty-state { padding: 28px 18px; border: 1px dashed #b5cbe3; border-radius: 9px; color: var(--muted); text-align: center; font-size: 0.78rem; }
+      .insight { padding: 12px; border-left: 3px solid var(--blue); border-radius: 5px; background: #eef6ff; color: #3e5e83; font-size: 0.76rem; line-height: 1.45; }
+      .opportunity { border-left-color: var(--mint); background: #edfff7; }
+      .module-action { margin-top: 12px; }
       .app-topline {
         display: flex;
         justify-content: space-between;
@@ -1733,6 +1752,9 @@
         .app-grid {
           grid-template-columns: 1fr;
         }
+        .module-header { align-items: start; flex-direction: column; }
+        .module-kpis, .module-panels { grid-template-columns: 1fr; }
+        .period-filter { width: 100%; }
         .form-grid {
           grid-template-columns: 1fr 1fr;
         }
@@ -2027,12 +2049,13 @@
               &#171;
             </button>
             <nav class="side-nav" aria-label="Módulos do aplicativo">
-              <button class="active" type="button">&#9632; Visão geral</button>
-              <button type="button">&#8593; Entradas</button>
-              <button type="button">&#8595; Saídas</button>
-              <button type="button">&#9673; Bancos</button>
-              <button type="button">&#9733; Objetivos</button>
-              <button type="button">&#9881; Configurações</button>
+              <button class="active" type="button" data-module="overview">&#9632; Visão geral</button>
+              <button type="button" data-module="income">&#8593; Entradas</button>
+              <button type="button" data-module="expenses">&#8595; Saídas</button>
+              <button type="button" data-module="banks">&#9673; Bancos</button>
+              <button type="button" data-module="goals">&#9733; Objetivos</button>
+              <button type="button" data-module="income-plus">&#43; Renda+</button>
+              <button type="button" data-module="settings">&#9881; Configurações</button>
               <button type="button" id="edit-profile-nav">
                 &#9998; Editar perfil
               </button>
@@ -2043,6 +2066,7 @@
             </div>
           </aside>
           <div class="app-main">
+            <div class="module-host" id="module-host" hidden></div>
             <div class="app-topline">
               <div>
                 <h3>Olá, Marina &#128075;</h3>
@@ -2812,6 +2836,8 @@
       const appShell = document.querySelector(".app-shell");
       const editProfileButton = document.querySelector("#edit-profile-button");
       const editProfileNav = document.querySelector("#edit-profile-nav");
+      const moduleHost = document.querySelector("#module-host");
+      const appMain = document.querySelector(".app-main");
       const startProfileButtons = [
         document.querySelector("#start-profile"),
         document.querySelector("#start-profile-hero"),
@@ -3056,12 +3082,50 @@
         authModal.hidden = true;
         window.location.hash = "admin";
       });
-      document.querySelectorAll(".side-nav button").forEach((button) => {
+      const moduleCopy = {
+        overview: ["Visão Geral", "Seu resumo financeiro inteligente para este período."],
+        income: ["Entradas", "Acompanhe suas fontes de renda e evolução."],
+        expenses: ["Saídas", "Entenda onde seu dinheiro está sendo usado."],
+        banks: ["Bancos", "Veja a distribuição do seu patrimônio disponível."],
+        goals: ["Objetivos", "Transforme planos importantes em próximos passos."],
+        "income-plus": ["Renda+", "Encontre possibilidades alinhadas ao seu perfil."],
+        settings: ["Configurações", "Ajuste preferências, notificações e privacidade."],
+      };
+      const moduleMarkup = (module) => {
+        const [title, description] = moduleCopy[module];
+        const totalTransactions = transactions.length;
+        const totalIncomeValue = transactions.filter((item) => item.type === "income").reduce((sum, item) => sum + item.value, 0);
+        const totalExpenseValue = transactions.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.value, 0);
+        const money = (value) => formatCurrency(value);
+        const kpis = module === "income" ? [["Total recebido", money(totalIncomeValue)], ["Receitas cadastradas", totalTransactions], ["Maior entrada", totalTransactions ? money(Math.max(...transactions.map((item) => item.type === "income" ? item.value : 0))) : "R$ 0,00"]]
+          : module === "expenses" ? [["Total gasto", money(totalExpenseValue)], ["Média registrada", totalTransactions ? money(totalExpenseValue / Math.max(totalTransactions, 1)) : "R$ 0,00"], ["Categorias", "Aguardando dados"]]
+          : module === "banks" ? [["Saldo consolidado", money(income - expense)], ["Contas ativas", "2"], ["Movimentações", totalTransactions]]
+          : module === "goals" ? [["Objetivos ativos", "2"], ["Progresso médio", "55%"], ["Próximo marco", "R$ 3.200"]]
+          : [["Saldo atual", money(income - expense)], ["Entradas", money(income)], ["Saídas", money(expense)]];
+        let body = "";
+        if (module === "income-plus") body = `<div class="module-panels"><div class="module-panel"><h4>Questionário estratégico</h4><p>Conte sobre suas habilidades, tempo disponível, objetivo e preferência por renda online ou presencial.</p><button class="btn btn-primary module-action" id="income-questionnaire" type="button">Começar questionário</button></div><div class="module-panel"><h4>Possibilidade identificada</h4><div class="insight opportunity">Adicione informações ao seu perfil para receber recomendações personalizadas, sem promessas de ganhos.</div></div></div>`;
+        else if (module === "goals") body = `<div class="module-panels"><div class="module-panel"><h4>Objetivos em andamento</h4><div class="goal-row"><span>Reserva de emergência</span><strong>68%</strong></div><div class="goal-row"><span>Viagem em julho</span><strong>42%</strong></div></div><div class="module-panel"><h4>Recomendação</h4><div class="insight">Adicione aportes e prazos para calcular quanto reservar por mês.</div></div></div>`;
+        else if (module === "settings") body = `<div class="module-panels"><div class="module-panel"><h4>Conta e preferências</h4><p>Use Editar perfil para atualizar seus dados. Categorias, limites, notificações e privacidade ficarão disponíveis nesta área.</p></div><div class="module-panel"><h4>Estado vazio</h4><div class="empty-state">Nenhuma preferência personalizada cadastrada ainda.</div></div></div>`;
+        else body = `<div class="module-panels"><div class="module-panel"><h4>Resumo inteligente</h4><div class="insight">${totalTransactions ? `Análise baseada em ${totalTransactions} lançamento(s) registrado(s) nesta sessão.` : "Adicione mais informações para gerar uma análise personalizada."}</div></div><div class="module-panel"><h4>Visualização do período</h4><div class="empty-state">Gráfico disponível quando houver dados suficientes.</div></div></div>`;
+        return `<div class="module-header"><div><div class="section-kicker">Módulo CONTAÊ</div><h2>${title}</h2><p>${description}</p></div><select class="period-filter" aria-label="Filtrar período"><option>Este mês</option><option>Hoje</option><option>Últimos 3 meses</option><option>Este ano</option><option>Personalizado</option></select></div><div class="module-kpis">${kpis.map(([label, value]) => `<div class="module-kpi"><small>${label}</small><strong>${value}</strong></div>`).join("")}</div>${body}`;
+      };
+      const showModule = (module) => {
+        const isOverview = module === "overview";
+        moduleHost.hidden = isOverview;
+        [...appMain.children].forEach((child) => {
+          if (child !== moduleHost) child.hidden = !isOverview;
+        });
+        if (!isOverview) {
+          moduleHost.innerHTML = moduleMarkup(module);
+          const questionnaire = document.querySelector("#income-questionnaire");
+          questionnaire?.addEventListener("click", () => openProfile("edit"));
+        }
+      };
+      document.querySelectorAll(".side-nav button[data-module]").forEach((button) => {
         button.addEventListener("click", () => {
-          document
-            .querySelectorAll(".side-nav button")
-            .forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".side-nav button").forEach((item) => item.classList.remove("active"));
           button.classList.add("active");
+          showModule(button.dataset.module);
         });
       });
       document.querySelectorAll(".plan-button").forEach((button) => {
