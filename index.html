@@ -3357,9 +3357,13 @@
         window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1"
       ) {
-        demoAdmin.style.display = "block";
+        if (demoAdmin) {
+          demoAdmin.style.display = "block";
+        }
       }
-      demoClient.style.display = "block";
+      if (demoClient) {
+        demoClient.style.display = "block";
+      }
 
       const renderSimulator = () => {
         const money = (value) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -3633,11 +3637,13 @@
         authFeedback.textContent =
           "O acesso admin será validado no servidor com senha protegida e recuperação enviada ao e-mail cadastrado. Esta página não libera privilégios localmente.";
       });
-      demoClient.addEventListener("click", () => {
-        sessionStorage.setItem("contae-authenticated", "1");
-        authModal.hidden = true;
-        window.location.hash = "app";
-      });
+      if (demoClient) {
+        demoClient.addEventListener("click", () => {
+          sessionStorage.setItem("contae-authenticated", "1");
+          authModal.hidden = true;
+          window.location.hash = "app";
+        });
+      }
       const openProfile = (mode = "create") => {
         profileMode = mode;
         profileModal.hidden = false;
