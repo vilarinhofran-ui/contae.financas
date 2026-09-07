@@ -1,0 +1,18 @@
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Build and dependency output
+node_modules/
+dist/
+build/
+
+# Local test artifacts
+playwright-report/
+test-results/
