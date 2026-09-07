@@ -1,4 +1,4 @@
-const CACHE_NAME = "contae-v22";
+const CACHE_NAME = "contae-v23";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -38,7 +38,7 @@ self.addEventListener("fetch", (event) => {
     event.request.destination === "document"
   ) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: "no-store" })
         .then((response) => {
           const copy = response.clone();
           caches
