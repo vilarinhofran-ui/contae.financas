@@ -6,8 +6,14 @@
     <meta name="theme-color" content="#07152f" />
     <meta
       name="description"
-      content="CONTAÊ transforma sua vida financeira em um jogo. Organize, evolua e conquiste seus objetivos."
+      content="Organize suas finanças, acompanhe seus objetivos, receba insights inteligentes e descubra novas possibilidades com o +RendaÊ."
     />
+    <link rel="canonical" href="https://contae-financas.netlify.app/" />
+    <meta property="og:title" content="CONTAÊ | Sua vida financeira em um só lugar" />
+    <meta property="og:description" content="Controle, inteligência e expansão para sua vida financeira." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://contae-financas.netlify.app/" />
+    <meta property="og:image" content="https://contae-financas.netlify.app/assets/contae-app-icon.png" />
     <link rel="icon" href="assets/favicon.ico" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -586,6 +592,7 @@
         box-shadow: var(--shadow);
       }
       body.dashboard-mode > .hero,
+      body.dashboard-mode > .tour-section,
       body.dashboard-mode > .white-section,
       body.dashboard-mode > .features-section,
       body.dashboard-mode > .pricing-section,
@@ -696,6 +703,7 @@
         padding: 28px;
         background: #fbfdff;
       }
+      .mobile-app-nav { display: none; }
       .module-host[hidden] { display: none; }
       .module-host { animation: module-in 0.22s ease both; }
       @keyframes module-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -715,6 +723,15 @@
       .insight { padding: 12px; border-left: 3px solid var(--blue); border-radius: 5px; background: #eef6ff; color: #3e5e83; font-size: 0.76rem; line-height: 1.45; }
       .opportunity { border-left-color: var(--mint); background: #edfff7; }
       .module-action { margin-top: 12px; }
+      .health-panel { display: grid; grid-template-columns: 110px 1fr; gap: 18px; align-items: center; margin-bottom: 12px; padding: 18px; border: 1px solid #cbe8dc; border-radius: 9px; background: #f2fff9; }
+      .health-score { display: grid; place-items: center; width: 92px; height: 92px; border: 8px solid #3ee0a0; border-radius: 50%; color: #0b8f66; font-family: "Space Grotesk", sans-serif; font-size: 1.4rem; font-weight: 700; }
+      .health-panel h4 { margin: 0 0 5px; font-family: "Space Grotesk", sans-serif; }
+      .health-panel p { margin: 0; color: #527565; font-size: 0.75rem; line-height: 1.5; }
+      .insight-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+      .insight-card { padding: 12px; border-radius: 7px; color: #49627d; background: #f3f7fb; font-size: 0.72rem; line-height: 1.45; }
+      .insight-card strong { display: block; margin-bottom: 4px; color: var(--ink); }
+      .income-plus-questionnaire { display: grid; gap: 8px; margin-top: 12px; }
+      .income-plus-questionnaire .btn { width: fit-content; }
       .goal-form { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr auto; gap: 8px; margin-top: 12px; }
       .goal-analysis { margin-top: 12px; padding: 14px; border-left: 3px solid var(--mint); border-radius: 7px; color: #356c5d; background: #effff8; font-size: 0.76rem; line-height: 1.5; }
       .goal-analysis strong { color: #164e40; }
@@ -809,6 +826,11 @@
       }
       .app-topline h3 {
         font-size: 1.25rem;
+      }
+      .app-topline-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
       .app-user {
         display: flex;
@@ -1855,6 +1877,9 @@
         }
         .module-header { align-items: start; flex-direction: column; }
         .module-kpis, .module-panels { grid-template-columns: 1fr; }
+        .insight-grid { grid-template-columns: 1fr; }
+        .health-panel { grid-template-columns: 1fr; text-align: center; }
+        .health-score { margin: 0 auto; }
         .period-filter { width: 100%; }
         .form-grid {
           grid-template-columns: 1fr 1fr;
@@ -1876,8 +1901,19 @@
           flex-direction: column;
         }
         .app-section {
-          padding: 72px 0;
+          padding: 0 0 72px;
         }
+        body.dashboard-mode .container { width: 100%; }
+        .app-shell { display: block; min-height: 100vh; border: 0; border-radius: 0; }
+        .app-sidebar { display: none; }
+        .app-main { padding: 22px 16px; }
+        .app-topline-actions { align-items: flex-start; flex-direction: column; }
+        .app-user { width: 100%; justify-content: space-between; }
+        .global-period-filter { width: 100%; }
+        .mobile-app-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 4px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: rgba(255, 255, 255, 0.96); box-shadow: 0 -8px 24px rgba(18, 48, 95, 0.08); }
+        .mobile-app-nav button { display: grid; gap: 3px; place-items: center; min-width: 0; color: var(--muted); background: transparent; font-size: 0.6rem; }
+        .mobile-app-nav button.active { color: var(--blue); font-weight: 700; }
+        .mobile-app-nav span:first-child { font-size: 1.05rem; }
         .tour-section { padding: 72px 0; }
         .tour-window { grid-template-columns: 82px 1fr; min-height: 190px; }
         .tour-sidebar { font-size: 0.56rem; }
@@ -1889,6 +1925,7 @@
           align-items: start;
           flex-direction: column;
         }
+        .app-topline-actions { width: 100%; justify-content: space-between; }
         .metrics {
           gap: 6px;
         }
@@ -1945,7 +1982,7 @@
               alt="CONTAÊ - Sua vida financeira em um só lugar"
           /></a>
           <div class="nav-links" id="nav-links">
-            <a href="#app">Dashboard</a>
+            <a href="#app/visao-geral">Visão geral</a>
             <a href="#planos">Planos</a>
             <a href="#curso">Curso</a>
           </div>
@@ -1985,6 +2022,9 @@
             >
               Começar minha jornada <span aria-hidden="true">&#8594;</span>
             </button>
+            <a class="btn btn-outline" id="open-simulator" href="#app/entradas"
+              >Abrir simulador <span aria-hidden="true">&#8594;</span></a
+            >
             <a class="btn btn-outline" href="#como-funciona"
               >Ver como funciona <span aria-hidden="true">&#8595;</span></a
             >
@@ -1997,7 +2037,7 @@
 
         <div class="dashboard-wrap" aria-label="Prévia do dashboard do CONTAÊ">
             <div class="dash-head">
-              <div class="dash-logo">conta<span>Ê</span></div>
+              <div class="dash-logo">CONTA<span>Ê</span></div>
               <div class="profile">
                 <span>Olá, você</span><span class="avatar">C</span>
               </div>
@@ -2163,7 +2203,7 @@
         </div>
         <div class="app-shell">
           <aside class="app-sidebar">
-            <div class="side-brand">conta<span>Ê</span></div>
+            <div class="side-brand">CONTA<span>Ê</span></div>
             <button
               class="sidebar-toggle"
               id="sidebar-toggle"
@@ -2180,6 +2220,9 @@
               <button type="button" data-module="banks">&#9673; Bancos</button>
               <button type="button" data-module="goals">&#9733; Objetivos</button>
               <button type="button" data-module="income-plus">+RendaÊ</button>
+              <button type="button" data-module="education">&#9998; Educação</button>
+              <button type="button" data-module="alerts">&#9888; Alertas</button>
+              <button type="button" data-module="profile">&#9787; Meu perfil</button>
               <button type="button" data-module="settings">&#9881; Configurações</button>
               <button type="button" id="edit-profile-nav">
                 &#9998; Editar perfil
@@ -2198,11 +2241,22 @@
             </div>
             <div class="app-topline">
               <div>
-                <h3>Olá, <span id="dashboard-user-name">Marina</span> &#128075;</h3>
+                <div class="demo-badge" id="demo-mode-badge">Modo demonstração · dados salvos neste navegador</div>
+                <h3>Olá, <span id="dashboard-user-name">você</span> &#128075;</h3>
                 <span class="muted-copy">Aqui está o seu mês até agora.</span>
               </div>
-              <div class="app-user">
-                <span>Plano Essencial</span><span class="app-avatar">M</span>
+              <div class="app-topline-actions">
+                <select class="period-filter" id="global-period-filter" aria-label="Filtrar todos os dados por período">
+                  <option value="month">Este mês</option>
+                  <option value="today">Hoje</option>
+                  <option value="week">7 dias</option>
+                  <option value="previous-month">Mês anterior</option>
+                  <option value="three-months">Últimos 3 meses</option>
+                  <option value="six-months">Últimos 6 meses</option>
+                  <option value="year">Este ano</option>
+                </select>
+                <div class="app-user">
+                  <span>Plano Essencial</span><span class="app-avatar">M</span>
                 <button class="logout-button" id="logout-button" type="button">Sair</button>
                 <button
                   class="profile-edit-button"
@@ -2211,6 +2265,7 @@
                 >
                   Editar perfil
                 </button>
+                </div>
               </div>
             </div>
             <div class="metrics">
@@ -2230,6 +2285,14 @@
                 <small>Economia do mês</small
                 ><strong id="total-saving">= R$ 0,00</strong>
               </div>
+            </div>
+            <div class="health-panel" id="health-panel">
+              <div class="health-score" id="health-score">0</div>
+              <div><h4>Saúde financeira</h4><p id="health-summary">Adicione lançamentos para calcular seu equilíbrio, capacidade de economia e próximos pontos de atenção.</p></div>
+            </div>
+            <div class="app-card" id="ai-insights-panel">
+              <h4>CONTAÊ Inteligência <span class="muted-copy">O que seus números estão dizendo?</span></h4>
+              <div class="insight-grid"><div class="insight-card"><strong>🔵 Oportunidade</strong><span>Adicione dados para encontrar possibilidades personalizadas.</span></div><div class="insight-card"><strong>🟢 Recomendação</strong><span>Comece registrando suas entradas e saídas reais.</span></div></div>
             </div>
             <div class="app-grid">
               <div class="app-card">
@@ -2499,6 +2562,13 @@
             ></div>
           </div>
         </div>
+        <nav class="mobile-app-nav" aria-label="Navegação principal do aplicativo">
+          <button class="active" type="button" data-mobile-module="overview"><span aria-hidden="true">⌂</span><span>Visão geral</span></button>
+          <button type="button" data-mobile-module="income"><span aria-hidden="true">↑</span><span>Entradas</span></button>
+          <button type="button" data-mobile-module="expenses"><span aria-hidden="true">↓</span><span>Saídas</span></button>
+          <button type="button" data-mobile-module="income-plus" aria-label="Mais Renda Ê"><span aria-hidden="true">＋</span><span>+RendaÊ</span></button>
+          <button type="button" data-mobile-module="goals"><span aria-hidden="true">★</span><span>Objetivos</span></button>
+        </nav>
       </div>
     </section>
 
@@ -2590,47 +2660,46 @@
         <div class="admin-panel">
           <div class="admin-toolbar">
             <h3>
-              Assinantes ativos <span class="muted-copy">128 usuários</span>
+              Perfil administrativo <span class="muted-copy">Autorização no servidor</span>
             </h3>
             <input
               class="admin-search"
               id="subscriber-search"
-              placeholder="Buscar por nome ou e-mail"
+              placeholder="Buscar permissão"
             />
           </div>
           <table class="subscriber-table">
             <thead>
               <tr>
-                <th>Assinante</th>
-                <th>Plano</th>
-                <th>Status</th>
-                <th>Próxima cobrança</th>
+                <th>Área</th>
+                <th>Acesso necessário</th>
+                <th>Proteção</th>
+                <th>Operação</th>
               </tr>
             </thead>
             <tbody id="subscriber-list">
               <tr>
-                <td>Marina Souza</td>
-                <td>Anual</td>
-                <td><span class="status">Ativo</span></td>
-                <td>06/09/2027</td>
+                <td>Usuários e assinaturas</td>
+                <td>admin:users</td>
+                <td><span class="status">Servidor</span></td>
+                <td>Consulta e gestão</td>
               </tr>
               <tr>
-                <td>Rafael Lima</td>
-                <td>Mensal</td>
-                <td><span class="status">Ativo</span></td>
-                <td>06/10/2026</td>
+                <td>Pagamentos</td>
+                <td>admin:payments</td>
+                <td><span class="status">Webhook</span></td>
+                <td>Conciliação</td>
               </tr>
               <tr>
-                <td>Camila Alves</td>
-                <td>Anual</td>
-                <td><span class="status paused">Pausado</span></td>
-                <td>06/12/2026</td>
+                <td>+RendaÊ</td>
+                <td>admin:income-plus</td>
+                <td><span class="status">Servidor</span></td>
+                <td>Revisar oportunidades</td>
               </tr>
             </tbody>
           </table>
           <p class="admin-note">
-            Dados ilustrativos. Em produção, permissões, cobrança e dados
-            pessoais devem ser controlados no servidor.
+            Este perfil não pode ser ativado pelo navegador. O backend deve validar a função, registrar auditoria e limitar cada operação à permissão necessária.
           </p>
           <button
             class="btn btn-primary"
@@ -2638,7 +2707,7 @@
             type="button"
             disabled
           >
-            Aprovar último comprovante
+            Aprovação exclusiva por webhook
           </button>
         </div>
       </div>
@@ -2674,9 +2743,9 @@
           &times;
         </button>
         <div class="section-kicker">Acesso protegido</div>
-        <h2 id="auth-title">Entre no CONTAÊ</h2>
+        <h2 id="auth-title">Conheça o CONTAÊ</h2>
         <p id="auth-description">
-          Entre com seu e-mail e senha cadastrados para acessar seu dashboard.
+          Esta versão estática abre uma demonstração local e não valida credenciais em servidor.
         </p>
         <input
           class="app-input"
@@ -2693,7 +2762,7 @@
           autocomplete="current-password"
         />
         <button class="google-btn" id="password-login" type="button">
-          Entrar com e-mail e senha
+          Abrir demonstração local
         </button>
         <button class="forgot-password" id="forgot-password" type="button">
           Esqueci minha senha
@@ -2923,6 +2992,8 @@
       const totalIncome = document.querySelector("#total-income");
       const totalExpense = document.querySelector("#total-expense");
       const totalSaving = document.querySelector("#total-saving");
+      const healthScore = document.querySelector("#health-score");
+      const healthSummary = document.querySelector("#health-summary");
       const fileImport = document.querySelector("#file-import");
       const fileFeedback = document.querySelector("#file-feedback");
       const authOpen = document.querySelector("#auth-open");
@@ -2972,6 +3043,7 @@
       const editProfileButton = document.querySelector("#edit-profile-button");
       const editProfileNav = document.querySelector("#edit-profile-nav");
       const logoutButton = document.querySelector("#logout-button");
+      const globalPeriodFilter = document.querySelector("#global-period-filter");
       const profileConsent = document.querySelector("#profile-consent");
       const moduleHost = document.querySelector("#module-host");
       const appMain = document.querySelector(".app-main");
@@ -2995,6 +3067,7 @@
       const simGoalMonths = document.querySelector("#sim-goal-months");
       const simGoalCalc = document.querySelector("#sim-goal-calc");
       const simGoalResult = document.querySelector("#sim-goal-result");
+      const simulatorLabel = document.querySelector(".simulator-label");
       const goalForm = document.querySelector("#goal-form");
       const goalType = document.querySelector("#goal-type");
       const goalTarget = document.querySelector("#goal-target");
@@ -3020,18 +3093,34 @@
       let deferredInstallPrompt;
       let selectedPlan = "Mensal";
       let profileMode = "create";
+      let activeModule = "overview";
+      let selectedPeriod = "month";
+      let activeTourModule = "overview";
       const simulatorState = { income: 0, expense: 0 };
+      simulatorLabel.textContent = "Simulação isolada nesta aba · seus dados não são salvos nem compartilhados";
+      const safeParse = (key, fallback) => {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch {
+          localStorage.removeItem(key);
+          return fallback;
+        }
+      };
 
-      document.querySelectorAll("[data-tour-module]").forEach((button) => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll("[data-tour-module]").forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          const content = tourModules[button.dataset.tourModule];
-          tourModuleTitle.textContent = content[0];
-          tourModuleDescription.textContent = content[1];
-          tourModuleManual.textContent = content[2];
-          tourModuleTopics.innerHTML = content[3].map((topic) => `<span class="tour-topic">${topic}</span>`).join("");
+      const renderTourModule = (module) => {
+        activeTourModule = module;
+        document.querySelectorAll("[data-tour-module]").forEach((item) => {
+          item.classList.toggle("active", item.dataset.tourModule === module);
         });
+        const content = tourModules[module];
+        tourModuleTitle.textContent = content[0];
+        tourModuleDescription.textContent = content[1];
+        tourModuleTopics.innerHTML = content[3].map((topic) => `<span class="tour-topic">${topic}</span>`).join("");
+        renderSimulator();
+      };
+      document.querySelectorAll("[data-tour-module]").forEach((button) => {
+        button.addEventListener("click", () => renderTourModule(button.dataset.tourModule));
       });
 
       if (
@@ -3048,6 +3137,16 @@
         simExpenseResult.textContent = `- ${money(simulatorState.expense)}`;
         const balance = simulatorState.income - simulatorState.expense;
         simBalanceResult.textContent = balance < 0 ? `- ${money(Math.abs(balance))}` : `= ${money(balance)}`;
+        const moduleMessages = {
+          overview: `Saldo demonstrativo: ${money(balance)}. Este cenário existe somente nesta aba.`,
+          income: `Entradas demonstrativas: ${money(simulatorState.income)}. Explore as fontes de renda no CONTAÊ.`,
+          expenses: `Saídas demonstrativas: ${money(simulatorState.expense)}. Compare gastos e identifique pontos de atenção.`,
+          banks: `Saldo consolidado demonstrativo: ${money(balance)}. Nenhuma conta bancária é conectada nesta prévia.`,
+          goals: balance > 0 ? `Com ${money(balance)} livres neste cenário, você pode simular um objetivo abaixo.` : "Registre uma entrada e uma saída para simular um caminho de objetivo.",
+          "income-plus": "O +RendaÊ usa um diagnóstico separado e não utiliza estes valores para prometer resultados.",
+          settings: "Esta prévia não altera preferências, contas ou dados pessoais.",
+        };
+        tourModuleManual.textContent = moduleMessages[activeTourModule];
       };
       publicSimulator.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -3060,6 +3159,10 @@
         simulatorState.expense = 0;
         simIncome.value = "";
         simExpense.value = "";
+        simGoalTarget.value = "";
+        simGoalMonths.value = "";
+        simGoalResult.textContent = "";
+        renderTourModule("overview");
         renderSimulator();
       });
       simGoalCalc.addEventListener("click", () => {
@@ -3077,7 +3180,7 @@
           return;
         }
         const monthly = target / months;
-        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        const contributions = safeParse("contae-goal-contributions", []);
         const contributed = contributions.reduce((sum, item) => sum + item.value, 0);
         const available = Math.max(income - expense, 0);
         const adherence = target ? Math.min((contributed / target) * 100, 100) : 0;
@@ -3086,17 +3189,17 @@
         goalAnalysis.innerHTML = `<strong>${goalType.value}</strong><br>Para alcançar ${formatCurrency(target)} em ${months} meses, a reserva necessária é de aproximadamente <strong>${formatCurrency(monthly)}/mês</strong>.<br><strong>Aderência:</strong> ${adherence.toFixed(0)}% (${formatCurrency(contributed)} acumulado).<br><strong>Cenário atual:</strong> ${available ? `seu resultado disponível estimado é ${formatCurrency(available)}/mês.` : "ainda não há resultado financeiro calculado."}<br><strong>Sentimento:</strong> ${feeling}.<ol class="goal-steps"><li>Registre entradas e saídas por 7 dias.</li><li>Confirme aportes somente após realizar o pagamento.</li><li>Revise o progresso no próximo login e ajuste o ritmo sem comprometer despesas essenciais.</li></ol>`;
       };
       goalForm.addEventListener("submit", (event) => { event.preventDefault(); renderGoalAnalysis(); localStorage.setItem("contae-goal", JSON.stringify({ type: goalType.value, target: goalTarget.value, months: goalMonths.value })); });
-      const savedGoal = JSON.parse(localStorage.getItem("contae-goal") || "null");
+      const savedGoal = safeParse("contae-goal", null);
       if (savedGoal) { goalType.value = savedGoal.type; goalTarget.value = savedGoal.target; goalMonths.value = savedGoal.months; renderGoalAnalysis(); }
       const renderGoalHistory = () => {
-        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        const contributions = safeParse("contae-goal-contributions", []);
         goalHistory.innerHTML = contributions.length ? contributions.map((item) => `<div class="goal-history-row"><span>${item.date}</span><strong>+ ${formatCurrency(item.value)} · Confirmado</strong></div>`).join("") : "Nenhum aporte confirmado ainda.";
       };
       goalContributionForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const value = Number(goalContribution.value);
         if (!value || !goalContributionDate.value) return;
-        const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]");
+        const contributions = safeParse("contae-goal-contributions", []);
         contributions.push({ value, date: goalContributionDate.value, confirmedAt: new Date().toISOString() });
         localStorage.setItem("contae-goal-contributions", JSON.stringify(contributions));
         goalContributionForm.reset();
@@ -3127,7 +3230,7 @@
         value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
       let income = 0;
       let expense = 0;
-      let transactions = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      let transactions = safeParse(storageKey, []);
       const saveTransactions = () => {
         localStorage.setItem(storageKey, JSON.stringify(transactions));
         saveStatus.textContent = "Salvo agora";
@@ -3135,27 +3238,57 @@
           saveStatus.textContent = "Salvamento automático ativo";
         }, 1800);
       };
+      const getPeriodTransactions = () => {
+        const now = new Date();
+        const start = new Date(now);
+        if (selectedPeriod === "today") start.setHours(0, 0, 0, 0);
+        else if (selectedPeriod === "week") start.setDate(now.getDate() - 6);
+        else if (selectedPeriod === "previous-month") {
+          start.setMonth(now.getMonth() - 1, 1);
+          const end = new Date(now.getFullYear(), now.getMonth(), 1);
+          return transactions.filter((item) => {
+            const date = new Date(item.createdAt);
+            return date >= start && date < end;
+          });
+        } else if (selectedPeriod === "three-months") start.setMonth(now.getMonth() - 3);
+        else if (selectedPeriod === "six-months") start.setMonth(now.getMonth() - 6);
+        else if (selectedPeriod === "year") start.setMonth(0, 1);
+        else start.setDate(1);
+        return transactions.filter((item) => new Date(item.createdAt) >= start);
+      };
       const updateTotals = () => {
+        const periodTransactions = getPeriodTransactions();
+        income = periodTransactions.filter((item) => item.type === "income").reduce((sum, item) => sum + item.value, 0);
+        expense = periodTransactions.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.value, 0);
         totalIncome.textContent = `+ ${formatCurrency(income)}`;
         totalExpense.textContent = `- ${formatCurrency(expense)}`;
         const balance = income - expense;
         totalBalance.textContent = balance < 0 ? `- ${formatCurrency(Math.abs(balance))}` : `= ${formatCurrency(balance)}`;
         totalSaving.textContent = `= ${formatCurrency(income - expense)}`;
+        const result = income - expense;
+        const savingsRate = income > 0 ? Math.max(0, result / income) : 0;
+        const expenseTransactions = periodTransactions.filter((item) => item.type === "expense");
+        const recurringExpenses = expenseTransactions.filter((item, index, items) => items.findIndex((candidate) => candidate.description === item.description) !== index).length;
+        const reserveContributions = safeParse("contae-goal-contributions", []).reduce((sum, item) => sum + item.value, 0);
+        const score = income > 0 ? Math.max(0, Math.min(100, Math.round((savingsRate * 60) + (result >= 0 ? 20 : 0) + (reserveContributions > 0 ? 10 : 0) + (recurringExpenses ? 5 : 10)))) : 0;
+        healthScore.textContent = score;
+        healthSummary.textContent = income ? `A avaliação considera equilíbrio entre entradas e saídas, capacidade de economia, registros recorrentes e aportes em objetivos. ${savingsRate >= 0.2 ? "Seu principal ponto positivo é a capacidade de economia registrada." : "O principal ponto de atenção é criar mais espaço entre entradas e saídas."}` : "Adicione lançamentos para calcular seu equilíbrio, capacidade de economia e próximos pontos de atenção.";
       };
-      transactions.forEach((transaction) => {
-        if (transaction.type === "income") income += transaction.value;
-        else expense += transaction.value;
-      });
       const applyProfileName = (email) => {
-        const profile = JSON.parse(localStorage.getItem("contae-profile") || "null");
+        const profile = safeParse("contae-profile", null);
         if (profile && (!email || profile.email === email.toLowerCase())) {
           dashboardUserName.textContent = profile.name.split(" ")[0] || "Olá";
         }
       };
       applyProfileName();
       updateTotals();
+      globalPeriodFilter.addEventListener("change", () => {
+        selectedPeriod = globalPeriodFilter.value;
+        updateTotals();
+        showModule(activeModule);
+      });
       const showDailyReminder = () => {
-        if (window.location.hash !== "#app") return;
+        if (!window.location.hash.startsWith("#app")) return;
         const today = new Date().toISOString().slice(0, 10);
         const hasToday = transactions.some((transaction) => transaction.createdAt?.slice(0, 10) === today);
         const dismissed = sessionStorage.getItem("contae-reminder-dismissed") === today;
@@ -3230,7 +3363,7 @@
       authOpen.addEventListener("click", () => {
         authModal.hidden = false;
         authFeedback.style.color = "var(--muted)";
-        authFeedback.textContent = "Informe seu e-mail e senha para entrar.";
+        authFeedback.textContent = "Informe seus dados para abrir a demonstração local.";
         authEmail.focus();
       });
       authClose.addEventListener("click", closeAuthModal);
@@ -3246,7 +3379,7 @@
         }
         authFeedback.style.color = "#0a9b70";
         authFeedback.textContent =
-          "Acesso autorizado. Abrindo seu dashboard...";
+          "Modo demonstração iniciado. Abrindo seu dashboard local...";
         applyProfileName(authEmail.value.trim());
         sessionStorage.setItem("contae-authenticated", "1");
         authModal.hidden = true;
@@ -3279,7 +3412,7 @@
         profileMode = mode;
         profileModal.hidden = false;
         profileFeedback.textContent = "";
-        const savedProfile = JSON.parse(localStorage.getItem("contae-profile") || "null");
+        const savedProfile = safeParse("contae-profile", null);
         profileTitle.textContent = mode === "edit" ? "Editar perfil" : "Crie seu perfil";
         profileSubmit.innerHTML = mode === "edit" ? "Salvar alterações" : "Criar perfil e ir para o checkout <span aria-hidden=\"true\">&#8594;</span>";
         if (mode === "edit" && savedProfile) {
@@ -3355,16 +3488,33 @@
         sidebarToggle.setAttribute("aria-label", collapsed ? "Expandir menu" : "Recolher menu");
       });
       demoAdmin.addEventListener("click", () => {
-        if (
-          window.location.hostname !== "localhost" &&
-          window.location.hostname !== "127.0.0.1"
-        )
-          return;
-        adminSection.classList.add("admin-visible");
-        sessionStorage.setItem("contae-authenticated", "1");
-        authModal.hidden = true;
-        window.location.hash = "admin";
+        authFeedback.style.color = "var(--muted)";
+        authFeedback.textContent = "A área administrativa requer autorização no servidor e não está disponível nesta versão estática.";
       });
+      const getIncomeRecommendations = (profile) => {
+        const availabilityPoints = Math.min(18, profile.hours * 2);
+        const preferencePoints = profile.preference === "online" ? 12 : profile.preference === "both" ? 9 : 5;
+        const goalPoints = profile.goal >= 1000 ? 10 : profile.goal >= 500 ? 7 : 4;
+        const experiencePoints = Math.min(12, Math.max(profile.profession.length, profile.skills.length) / 4);
+        const baseScore = Math.round(Math.min(96, 52 + availabilityPoints + preferencePoints + goalPoints + experiencePoints));
+        const onlineFit = profile.preference !== "in-person";
+        return [
+          {
+            name: onlineFit ? "Serviço especializado online" : "Serviço especializado local",
+            score: baseScore,
+            time: `${profile.hours}h/semana disponíveis`,
+            potential: profile.goal >= 1000 ? "R$ 800 a R$ 2.500" : "R$ 300 a R$ 1.200",
+            firstStep: "Defina um serviço específico que use suas habilidades e converse com possíveis clientes.",
+          },
+          {
+            name: onlineFit ? "Produto digital de conhecimento" : "Projeto sob encomenda",
+            score: Math.max(55, baseScore - 8),
+            time: `${Math.max(3, Math.ceil(profile.hours * 0.6))}h/semana estimadas`,
+            potential: profile.goal >= 1000 ? "R$ 500 a R$ 2.000" : "R$ 200 a R$ 900",
+            firstStep: "Valide uma pequena oferta antes de dedicar recursos ou assumir custos.",
+          },
+        ];
+      };
       const moduleCopy = {
         overview: ["Visão Geral", "Seu resumo financeiro inteligente para este período."],
         income: ["Entradas", "Acompanhe suas fontes de renda e evolução."],
@@ -3372,13 +3522,17 @@
         banks: ["Bancos", "Veja a distribuição do seu patrimônio disponível."],
         goals: ["Objetivos", "Transforme planos importantes em próximos passos."],
         "income-plus": ["+RendaÊ", "Encontre possibilidades alinhadas ao seu perfil."],
+        education: ["Educação", "Aprenda conforme seu momento financeiro."],
+        alerts: ["Alertas", "Veja o que merece atenção agora."],
+        profile: ["Meu perfil", "Informações que personalizam sua experiência no CONTAÊ e no +RendaÊ."],
         settings: ["Configurações", "Ajuste preferências, notificações e privacidade."],
       };
       const moduleMarkup = (module) => {
         const [title, description] = moduleCopy[module];
-        const totalTransactions = transactions.length;
-        const totalIncomeValue = transactions.filter((item) => item.type === "income").reduce((sum, item) => sum + item.value, 0);
-        const totalExpenseValue = transactions.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.value, 0);
+        const periodTransactions = getPeriodTransactions();
+        const totalTransactions = periodTransactions.length;
+        const totalIncomeValue = periodTransactions.filter((item) => item.type === "income").reduce((sum, item) => sum + item.value, 0);
+        const totalExpenseValue = periodTransactions.filter((item) => item.type === "expense").reduce((sum, item) => sum + item.value, 0);
         const money = (value) => formatCurrency(value);
         const kpis = module === "income" ? [["Total recebido", money(totalIncomeValue)], ["Receitas cadastradas", totalTransactions], ["Maior entrada", totalTransactions ? money(Math.max(...transactions.map((item) => item.type === "income" ? item.value : 0))) : "R$ 0,00"]]
           : module === "expenses" ? [["Total gasto", money(totalExpenseValue)], ["Média registrada", totalTransactions ? money(totalExpenseValue / Math.max(totalTransactions, 1)) : "R$ 0,00"], ["Categorias", "Aguardando dados"]]
@@ -3386,29 +3540,67 @@
           : module === "goals" ? [["Objetivos ativos", totalTransactions ? "2" : "0"], ["Progresso médio", totalTransactions ? "55%" : "0%"], ["Próximo marco", totalTransactions ? "R$ 3.200" : "R$ 0,00"]]
           : [["Saldo atual", money(income - expense)], ["Entradas", money(income)], ["Saídas", money(expense)]];
         let body = "";
-        if (module === "income-plus") body = `<div class="module-panels"><div class="module-panel"><h4>Questionário estratégico</h4><p>Conte sobre suas habilidades, tempo disponível, objetivo e preferência por renda online ou presencial.</p><button class="btn btn-primary module-action" id="income-questionnaire" type="button">Começar questionário</button></div><div class="module-panel"><h4>Possibilidade identificada</h4><div class="insight opportunity">Adicione informações ao seu perfil para receber recomendações personalizadas, sem promessas de ganhos.</div></div></div>`;
-        else if (module === "goals") { const savedGoal = JSON.parse(localStorage.getItem("contae-goal") || "null"); const contributions = JSON.parse(localStorage.getItem("contae-goal-contributions") || "[]"); const contributed = contributions.reduce((sum, item) => sum + item.value, 0); const target = savedGoal ? Number(savedGoal.target) : 0; const adherence = target ? Math.min((contributed / target) * 100, 100).toFixed(0) : "0"; body = `<div class="module-panels"><div class="module-panel"><h4>Objetivo cadastrado</h4>${savedGoal ? `<div class="goal-row"><span>${savedGoal.type}</span><strong>${adherence}%</strong></div><p>${formatCurrency(contributed)} de ${formatCurrency(target)} acumulado.</p>` : `<div class="empty-state">Nenhum objetivo cadastrado. Cadastre um objetivo na Visão Geral para acompanhar a aderência.</div>`}</div><div class="module-panel"><h4>Análise de cenário</h4><div class="insight">${savedGoal ? "Aderência atualizada pelos aportes confirmados e pelo prazo informado." : "Adicione um objetivo e aportes para receber recomendações realistas."}</div></div></div>`; }
-        else if (module === "settings") body = `<div class="module-panels"><div class="module-panel"><h4>Conta e preferências</h4><p>Use Editar perfil para atualizar seus dados. Categorias, limites, notificações e privacidade ficarão disponíveis nesta área.</p></div><div class="module-panel"><h4>Estado vazio</h4><div class="empty-state">Nenhuma preferência personalizada cadastrada ainda.</div></div></div>`;
+        if (module === "income-plus") { const incomeProfile = safeParse("contae-income-profile", null); const recommendations = incomeProfile ? getIncomeRecommendations(incomeProfile) : []; body = `<div class="module-panels"><div class="module-panel"><h4>Diagnóstico +RendaÊ</h4><p>Sua próxima fonte de renda pode começar com o que você já sabe fazer. Conte sobre seu momento para encontrar possibilidades realistas.</p><div class="income-plus-questionnaire"><input class="app-input" id="income-profession" value="${incomeProfile?.profession || ""}" placeholder="Profissão, experiência ou área" /><input class="app-input" id="income-skills" value="${incomeProfile?.skills || ""}" placeholder="Habilidades, conhecimentos ou hobbies" /><input class="app-input" id="income-hours" value="${incomeProfile?.hours || ""}" type="number" min="1" max="80" placeholder="Horas disponíveis por semana" /><select class="app-select" id="income-preference"><option value="online" ${incomeProfile?.preference === "online" ? "selected" : ""}>Prefiro trabalhar online</option><option value="in-person" ${incomeProfile?.preference === "in-person" ? "selected" : ""}>Prefiro trabalhar presencialmente</option><option value="both" ${incomeProfile?.preference === "both" ? "selected" : ""}>Online e presencial</option></select><input class="app-input" id="income-goal" value="${incomeProfile?.goal || ""}" type="number" min="1" placeholder="Meta mensal adicional (R$)" /><label class="privacy-consent"><input id="income-consent" type="checkbox" ${incomeProfile?.consent ? "checked" : ""} /><span>Autorizo o uso destas informações para personalizar meu perfil +RendaÊ.</span></label><button class="btn btn-primary module-action" id="income-questionnaire" type="button">Atualizar meu perfil +RendaÊ</button></div></div><div class="module-panel"><h4>Possibilidades compatíveis</h4>${recommendations.length ? recommendations.map((item) => `<div class="insight opportunity"><strong>${item.name}</strong><br><b>${item.score}% de compatibilidade</b> · ${item.time}<br>Potencial indicativo: ${item.potential}/mês. Considerando seu perfil, pode ser uma possibilidade a avaliar antes de investir.<br><small>Primeiro passo: ${item.firstStep}</small></div>`).join("") : `<div class="empty-state">Conclua o diagnóstico +RendaÊ para receber alternativas compatíveis. As recomendações são possibilidades, não promessas de renda.</div>`}</div></div>`; }
+        else if (module === "education") body = `<div class="module-panels"><div class="module-panel"><h4>Trilhas recomendadas</h4><div class="tour-topics"><span class="tour-topic">Organizar</span><span class="tour-topic">Criar reserva</span><span class="tour-topic">Controlar gastos</span><span class="tour-topic">Aumentar renda</span><span class="tour-topic">Investir</span></div></div><div class="module-panel"><h4>Próxima aula</h4><div class="empty-state">Adicione dados financeiros para personalizar sua trilha.</div></div></div>`;
+        else if (module === "alerts") body = `<div class="module-panels"><div class="module-panel"><h4>Central de alertas</h4><div class="empty-state">Nenhum alerta gerado. Alertas aparecem quando houver dados suficientes.</div></div><div class="module-panel"><h4>Oportunidades</h4><div class="insight opportunity">Novas possibilidades serão calculadas a partir de seus lançamentos e perfil +RendaÊ.</div></div></div>`;
+        else if (module === "goals") { const savedGoal = safeParse("contae-goal", null); const contributions = safeParse("contae-goal-contributions", []); const contributed = contributions.reduce((sum, item) => sum + item.value, 0); const target = savedGoal ? Number(savedGoal.target) : 0; const adherence = target ? Math.min((contributed / target) * 100, 100).toFixed(0) : "0"; body = `<div class="module-panels"><div class="module-panel"><h4>Objetivo cadastrado</h4>${savedGoal ? `<div class="goal-row"><span>${savedGoal.type}</span><strong>${adherence}%</strong></div><p>${formatCurrency(contributed)} de ${formatCurrency(target)} acumulado.</p>` : `<div class="empty-state">Nenhum objetivo cadastrado. Cadastre um objetivo na Visão Geral para acompanhar a aderência.</div>`}</div><div class="module-panel"><h4>Análise de cenário</h4><div class="insight">${savedGoal ? "Aderência atualizada pelos aportes confirmados e pelo prazo informado." : "Adicione um objetivo e aportes para receber recomendações realistas."}</div></div></div>`; }
+        else if (module === "profile") { const profile = safeParse("contae-profile", null); body = `<div class="module-panels"><div class="module-panel"><h4>Informações pessoais</h4>${profile ? `<p><strong>${profile.name}</strong><br>${profile.email}<br>Plano ${profile.plan}</p>` : `<div class="empty-state">Complete seu perfil para personalizar o CONTAÊ.</div>`}<button class="btn btn-primary module-action" id="module-edit-profile" type="button">Editar meu perfil</button></div><div class="module-panel"><h4>Preferências +RendaÊ</h4><p>Profissão, habilidades, disponibilidade e preferências de renda alimentam recomendações compatíveis.</p><button class="btn btn-outline module-action" id="module-income-profile" type="button">Completar perfil +RendaÊ</button></div></div>`; }
+        else if (module === "settings") body = `<div class="module-panels"><div class="module-panel"><h4>Conta e preferências</h4><p>Use Editar perfil para atualizar seus dados. Categorias, limites, notificações e privacidade ficarão disponíveis nesta área.</p></div><div class="module-panel"><h4>Preferências +RendaÊ</h4><p>Controle recomendações, frequência, faixa de investimento e disponibilidade semanal.</p></div></div>`;
         else body = `<div class="module-panels"><div class="module-panel"><h4>Resumo inteligente</h4><div class="insight">${totalTransactions ? `Análise baseada em ${totalTransactions} lançamento(s) registrado(s) nesta sessão.` : "Adicione mais informações para gerar uma análise personalizada."}</div></div><div class="module-panel"><h4>Visualização do período</h4><div class="empty-state">Gráfico disponível quando houver dados suficientes.</div></div></div>`;
         return `<div class="module-header"><div><div class="section-kicker">Módulo CONTAÊ</div><h2>${title}</h2><p>${description}</p></div><select class="period-filter" aria-label="Filtrar período"><option>Este mês</option><option>Hoje</option><option>Últimos 3 meses</option><option>Este ano</option><option>Personalizado</option></select></div><div class="module-kpis">${kpis.map(([label, value]) => `<div class="module-kpi"><small>${label}</small><strong>${value}</strong></div>`).join("")}</div>${body}`;
       };
       const showModule = (module) => {
+        activeModule = module;
         const isOverview = module === "overview";
         moduleHost.hidden = isOverview;
         [...appMain.children].forEach((child) => {
-          if (child !== moduleHost) child.hidden = !isOverview;
+          if (child !== moduleHost && child.id !== "demo-mode-badge") child.hidden = !isOverview;
         });
         if (!isOverview) {
           moduleHost.innerHTML = moduleMarkup(module);
           const questionnaire = document.querySelector("#income-questionnaire");
-          questionnaire?.addEventListener("click", () => openProfile("edit"));
+          questionnaire?.addEventListener("click", () => {
+            const profile = {
+              profession: document.querySelector("#income-profession").value.trim(),
+              skills: document.querySelector("#income-skills").value.trim(),
+              hours: Number(document.querySelector("#income-hours").value),
+              preference: document.querySelector("#income-preference").value,
+              goal: Number(document.querySelector("#income-goal").value),
+              consent: document.querySelector("#income-consent").checked,
+            };
+            if (!profile.profession || !profile.skills || !profile.hours || !profile.goal || !profile.consent) {
+              questionnaire.insertAdjacentHTML("afterend", `<p class="import-result">Complete os campos e autorize o uso dos dados para gerar recomendações.</p>`);
+              return;
+            }
+            localStorage.setItem("contae-income-profile", JSON.stringify(profile));
+            showModule("income-plus");
+          });
+          document.querySelector("#module-edit-profile")?.addEventListener("click", () => openProfile("edit"));
+          document.querySelector("#module-income-profile")?.addEventListener("click", () => {
+            window.location.hash = "app/mais-renda";
+          });
         }
+      };
+      const moduleRoutes = {
+        overview: "visao-geral",
+        income: "entradas",
+        expenses: "saidas",
+        banks: "bancos",
+        goals: "objetivos",
+        "income-plus": "mais-renda",
+        education: "educacao",
+        alerts: "notificacoes",
+        profile: "perfil",
+        settings: "configuracoes",
       };
       document.querySelectorAll(".side-nav button[data-module]").forEach((button) => {
         button.addEventListener("click", () => {
-          document.querySelectorAll(".side-nav button").forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          showModule(button.dataset.module);
+          window.location.hash = `app/${moduleRoutes[button.dataset.module]}`;
+        });
+      });
+      document.querySelectorAll("[data-mobile-module]").forEach((button) => {
+        button.addEventListener("click", () => {
+          window.location.hash = `app/${moduleRoutes[button.dataset.mobileModule]}`;
         });
       });
       pricingPlanSelect.addEventListener("change", () => {
@@ -3453,8 +3645,7 @@
       proofFile.addEventListener("change", () => {
         if (!proofFile.files.length) return;
         paymentFeedback.textContent =
-          "Comprovante recebido e enviado para análise administrativa. O acesso só será liberado após conferência.";
-        approveProof.disabled = false;
+          "Comprovante selecionado para envio. O acesso só pode ser liberado após confirmação do gateway por webhook.";
       });
       approveProof.addEventListener("click", () => {
         approveProof.disabled = true;
@@ -3555,21 +3746,46 @@
       const validRoutes = new Set([
         "inicio",
         "app",
-        "admin",
         "planos",
         "curso",
         "comece",
         "como-funciona",
         "recursos",
       ]);
+      const appRouteModules = {
+        "visao-geral": "overview",
+        entradas: "income",
+        saidas: "expenses",
+        bancos: "banks",
+        objetivos: "goals",
+        "mais-renda": "income-plus",
+        educacao: "education",
+        notificacoes: "alerts",
+        alertas: "alerts",
+        perfil: "profile",
+        configuracoes: "settings",
+      };
       const navigateToHash = () => {
-        const route = window.location.hash.slice(1) || "inicio";
+        const [route, appRoute] = (window.location.hash.slice(1) || "inicio").split("/");
         const authenticated = sessionStorage.getItem("contae-authenticated") === "1";
-        if ((route === "app" || route === "admin") && !authenticated) {
+        if (route === "admin") {
           window.location.hash = "inicio";
           return;
         }
+        if (route === "app" && !authenticated) {
+          sessionStorage.setItem("contae-authenticated", "1");
+        }
         document.body.classList.toggle("dashboard-mode", route === "app");
+        if (route === "app") {
+          const module = appRouteModules[appRoute] || "overview";
+          document.querySelectorAll(".side-nav button[data-module]").forEach((button) => {
+            button.classList.toggle("active", button.dataset.module === module);
+          });
+          document.querySelectorAll("[data-mobile-module]").forEach((button) => {
+            button.classList.toggle("active", button.dataset.mobileModule === module);
+          });
+          showModule(module);
+        }
         showDailyReminder?.();
         if (!validRoutes.has(route)) window.location.hash = "inicio";
       };

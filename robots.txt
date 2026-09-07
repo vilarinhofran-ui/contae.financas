@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://contae-financas.netlify.app/sitemap.xml
