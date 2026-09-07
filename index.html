@@ -722,6 +722,27 @@
       .privacy-box strong { color: var(--ink); }
       .logout-button { padding: 7px 10px; border: 1px solid #f0c7d0; border-radius: 6px; color: #b5425d; background: #fff7f8; font-size: 0.68rem; font-weight: 700; }
       .logout-button:hover { background: #ffecee; }
+      .metric.income-metric { border-color: #b9ecd9; background: #f0fff8; }
+      .metric.expense-metric { border-color: #f4d0a8; background: #fff8ef; }
+      .metric.expense-metric strong { color: #c66a13; }
+      .update-reminder { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 14px; padding: 13px 15px; border: 1px solid #f2d59d; border-radius: 9px; background: #fff9e9; color: #765317; font-size: 0.76rem; }
+      .update-reminder strong { display: block; margin-bottom: 3px; color: #5e410d; }
+      .reminder-actions { display: flex; gap: 7px; flex: 0 0 auto; }
+      .reminder-actions button { padding: 8px 10px; border-radius: 6px; color: #765317; background: #ffe4a8; font-size: 0.67rem; font-weight: 700; }
+      .reminder-actions button:last-child { border: 1px solid #e2c982; background: transparent; }
+      .whatsapp-float { position: fixed; right: 20px; bottom: 20px; z-index: 8; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: white; background: #19b86d; box-shadow: 0 10px 25px rgba(25, 184, 109, 0.3); font-size: 1.45rem; }
+      .whatsapp-float:hover { transform: translateY(-3px); }
+      .tour-section { padding: 86px 0; background: #edf5ff; }
+      .tour-stage { max-width: 720px; margin: 28px auto 0; padding: 15px; border: 1px solid #cfe0f2; border-radius: 14px; background: var(--white); box-shadow: var(--shadow); }
+      .tour-window { display: grid; grid-template-columns: 120px 1fr; min-height: 220px; overflow: hidden; border-radius: 9px; background: #fbfdff; }
+      .tour-sidebar { padding: 16px 10px; color: #afbed3; background: var(--navy); font-size: 0.66rem; }
+      .tour-sidebar strong { display: block; margin-bottom: 18px; color: var(--mint); font-family: "Space Grotesk", sans-serif; }
+      .tour-sidebar span { display: block; margin: 12px 0; }
+      .tour-content { padding: 22px; }
+      .tour-content h3 { font-size: 1.25rem; }
+      .tour-content p { color: var(--muted); font-size: 0.75rem; }
+      .tour-preview { height: 46px; margin-top: 20px; border-radius: 8px; background: linear-gradient(90deg, #1479eb 0 42%, #e6f0fc 42% 68%, #3ee0a0 68%); animation: tour-pulse 3s ease-in-out infinite; }
+      @keyframes tour-pulse { 0%, 100% { opacity: 0.7; transform: scaleX(0.96); } 50% { opacity: 1; transform: scaleX(1); } }
       .app-topline {
         display: flex;
         justify-content: space-between;
@@ -1800,6 +1821,10 @@
         .app-section {
           padding: 72px 0;
         }
+        .tour-section { padding: 72px 0; }
+        .tour-window { grid-template-columns: 82px 1fr; min-height: 190px; }
+        .tour-sidebar { font-size: 0.56rem; }
+        .tour-content { padding: 15px; }
         .side-nav {
           grid-template-columns: repeat(2, 1fr);
         }
@@ -1853,6 +1878,7 @@
     </style>
   </head>
   <body>
+    <a class="whatsapp-float" href="https://wa.me/55987039711" target="_blank" rel="noopener" aria-label="Falar com o CONTAÊ no WhatsApp">&#9742;</a>
     <header class="hero">
       <div class="container topbar">
         <nav class="nav" aria-label="Navegação principal">
@@ -1963,6 +1989,15 @@
         </div>
       </main>
     </header>
+
+    <section class="tour-section" id="tour">
+      <div class="container">
+        <div class="section-head"><div><div class="section-kicker">Veja por dentro</div><h2>Uma jornada que acompanha você.</h2></div><p>Explore o dashboard, lançamentos, objetivos e Renda+ em uma experiência simples e organizada.</p></div>
+        <div class="tour-stage" aria-label="Prévia animada dos módulos do CONTAÊ">
+          <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><span>■ Visão geral</span><span>↑ Entradas</span><span>↓ Saídas</span><span>★ Objetivos</span><span>＋ Renda+</span></div><div class="tour-content"><h3>Seu próximo passo fica claro.</h3><p>Veja saldo, organize lançamentos e transforme objetivos em ações.</p><div class="tour-preview"></div></div></div>
+        </div>
+      </div>
+    </section>
 
     <section class="white-section" id="como-funciona">
       <div class="container">
@@ -2090,6 +2125,10 @@
           </aside>
           <div class="app-main">
             <div class="module-host" id="module-host" hidden></div>
+            <div class="update-reminder" id="update-reminder" hidden>
+              <div><strong>Atualizar lançamentos</strong><span>Você tem dias anteriores sem lançamentos registrados.</span></div>
+              <div class="reminder-actions"><button id="reminder-update" type="button">Atualizar agora</button><button id="reminder-ok" type="button">Tudo em ordem</button></div>
+            </div>
             <div class="app-topline">
               <div>
                 <h3>Olá, <span id="dashboard-user-name">Marina</span> &#128075;</h3>
@@ -2112,11 +2151,11 @@
                 <small>Saldo consolidado</small
                 ><strong id="total-balance">= R$ 0,00</strong>
               </div>
-              <div class="metric positive">
+              <div class="metric positive income-metric">
                 <small>+ Entradas</small
                 ><strong id="total-income">+ R$ 0,00</strong>
               </div>
-              <div class="metric">
+              <div class="metric expense-metric">
                 <small>- Saídas</small
                 ><strong id="total-expense">- R$ 0,00</strong>
               </div>
@@ -2141,7 +2180,7 @@
                     >
                   </div>
                   <span class="bank-value"
-                    >R$ 2.840,00<small>disponível</small></span
+                    >R$ 0,00<small>disponível</small></span
                   >
                 </div>
                 <div class="bank-row">
@@ -2154,7 +2193,7 @@
                     >
                   </div>
                   <span class="bank-value"
-                    >R$ 1.440,00<small>disponível</small></span
+                    >R$ 0,00<small>disponível</small></span
                   >
                 </div>
               </div>
@@ -2169,7 +2208,7 @@
                     ></span>
                   </div>
                   <span class="goal-value"
-                    >68%<small>R$ 6.800 / R$ 10.000</small></span
+                    >0%<small>R$ 0 / R$ 0</small></span
                   >
                 </div>
                 <div class="goal-row">
@@ -2184,13 +2223,13 @@
                     ></span>
                   </div>
                   <span class="goal-value"
-                    >42%<small>R$ 2.100 / R$ 5.000</small></span
+                    >0%<small>R$ 0 / R$ 0</small></span
                   >
                 </div>
               </div>
               <div class="app-card form-card">
                 <h4>
-                  Lançamento rápido
+                  Atualizar lançamentos
                   <span class="muted-copy"
                     >Atualiza os saldos em tempo real</span
                   >
@@ -2836,6 +2875,9 @@
       const adminSection = document.querySelector("#admin");
       const bankSelect = document.querySelector("#transaction-bank-select");
       const saveStatus = document.querySelector("#save-status");
+      const updateReminder = document.querySelector("#update-reminder");
+      const reminderUpdate = document.querySelector("#reminder-update");
+      const reminderOk = document.querySelector("#reminder-ok");
       const storageKey = "contae-transactions";
       const profileModal = document.querySelector("#profile-modal");
       const profileForm = document.querySelector("#profile-form");
@@ -2907,7 +2949,8 @@
       const updateTotals = () => {
         totalIncome.textContent = `+ ${formatCurrency(income)}`;
         totalExpense.textContent = `- ${formatCurrency(expense)}`;
-        totalBalance.textContent = `= ${formatCurrency(income - expense)}`;
+        const balance = income - expense;
+        totalBalance.textContent = balance < 0 ? `- ${formatCurrency(Math.abs(balance))}` : `= ${formatCurrency(balance)}`;
         totalSaving.textContent = `= ${formatCurrency(income - expense)}`;
       };
       transactions.forEach((transaction) => {
@@ -2922,6 +2965,14 @@
       };
       applyProfileName();
       updateTotals();
+      const showDailyReminder = () => {
+        if (window.location.hash !== "#app") return;
+        const today = new Date().toISOString().slice(0, 10);
+        const hasToday = transactions.some((transaction) => transaction.createdAt?.slice(0, 10) === today);
+        const dismissed = sessionStorage.getItem("contae-reminder-dismissed") === today;
+        updateReminder.hidden = hasToday || dismissed;
+      };
+      showDailyReminder();
 
       transactionForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -2949,11 +3000,20 @@
         });
         saveTransactions();
         updateTotals();
+        updateReminder.hidden = true;
         transactionFeedback.style.color = "#0a9b70";
         transactionFeedback.textContent = `${description} adicionado. Seus totais foram atualizados nesta sessão.`;
         transactionForm.reset();
         document.querySelector("#transaction-type").value = "income";
         bankSelect.value = "000";
+      });
+      reminderUpdate.addEventListener("click", () => {
+        document.querySelector("#transaction-description").focus();
+        updateReminder.hidden = true;
+      });
+      reminderOk.addEventListener("click", () => {
+        sessionStorage.setItem("contae-reminder-dismissed", new Date().toISOString().slice(0, 10));
+        updateReminder.hidden = true;
       });
 
       bankSelect.addEventListener("change", () => {
@@ -3133,8 +3193,8 @@
         const money = (value) => formatCurrency(value);
         const kpis = module === "income" ? [["Total recebido", money(totalIncomeValue)], ["Receitas cadastradas", totalTransactions], ["Maior entrada", totalTransactions ? money(Math.max(...transactions.map((item) => item.type === "income" ? item.value : 0))) : "R$ 0,00"]]
           : module === "expenses" ? [["Total gasto", money(totalExpenseValue)], ["Média registrada", totalTransactions ? money(totalExpenseValue / Math.max(totalTransactions, 1)) : "R$ 0,00"], ["Categorias", "Aguardando dados"]]
-          : module === "banks" ? [["Saldo consolidado", money(income - expense)], ["Contas ativas", "2"], ["Movimentações", totalTransactions]]
-          : module === "goals" ? [["Objetivos ativos", "2"], ["Progresso médio", "55%"], ["Próximo marco", "R$ 3.200"]]
+          : module === "banks" ? [["Saldo consolidado", money(income - expense)], ["Contas ativas", totalTransactions ? "2" : "0"], ["Movimentações", totalTransactions]]
+          : module === "goals" ? [["Objetivos ativos", totalTransactions ? "2" : "0"], ["Progresso médio", totalTransactions ? "55%" : "0%"], ["Próximo marco", totalTransactions ? "R$ 3.200" : "R$ 0,00"]]
           : [["Saldo atual", money(income - expense)], ["Entradas", money(income)], ["Saídas", money(expense)]];
         let body = "";
         if (module === "income-plus") body = `<div class="module-panels"><div class="module-panel"><h4>Questionário estratégico</h4><p>Conte sobre suas habilidades, tempo disponível, objetivo e preferência por renda online ou presencial.</p><button class="btn btn-primary module-action" id="income-questionnaire" type="button">Começar questionário</button></div><div class="module-panel"><h4>Possibilidade identificada</h4><div class="insight opportunity">Adicione informações ao seu perfil para receber recomendações personalizadas, sem promessas de ganhos.</div></div></div>`;
@@ -3321,6 +3381,7 @@
           return;
         }
         document.body.classList.toggle("dashboard-mode", route === "app");
+        showDailyReminder?.();
         if (!validRoutes.has(route)) window.location.hash = "inicio";
       };
       window.addEventListener("hashchange", navigateToHash);
