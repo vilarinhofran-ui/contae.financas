@@ -602,6 +602,9 @@
       body.dashboard-mode > footer {
         display: none;
       }
+      body:not(.dashboard-mode) .app-section {
+        display: none;
+      }
       body.dashboard-mode .app-section {
         min-height: 100vh;
         padding: 32px 0;
@@ -3096,9 +3099,12 @@
       let activeModule = "overview";
       let selectedPeriod = "month";
       let activeTourModule = "overview";
+      let transientIncomeProfile = null;
       const simulatorState = { income: 0, expense: 0 };
       simulatorLabel.textContent = "Simulação isolada nesta aba · seus dados não são salvos nem compartilhados";
+      const hasActiveSubscription = () => sessionStorage.getItem("contae-subscription-status") === "active";
       const safeParse = (key, fallback) => {
+        if (!hasActiveSubscription()) return key === "contae-income-profile" ? transientIncomeProfile || fallback : fallback;
         try {
           const raw = localStorage.getItem(key);
           return raw ? JSON.parse(raw) : fallback;
@@ -3106,6 +3112,15 @@
           localStorage.removeItem(key);
           return fallback;
         }
+      };
+      const readSubscriberData = (key, fallback) => hasActiveSubscription() ? safeParse(key, fallback) : fallback;
+      const writeSubscriberData = (key, value) => {
+        if (!hasActiveSubscription()) {
+          if (key === "contae-income-profile") transientIncomeProfile = value;
+          return false;
+        }
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
       };
 
       const renderTourModule = (module) => {
@@ -3180,7 +3195,7 @@
           return;
         }
         const monthly = target / months;
-        const contributions = safeParse("contae-goal-contributions", []);
+        const contributions = readSubscriberData("contae-goal-contributions", []);
         const contributed = contributions.reduce((sum, item) => sum + item.value, 0);
         const available = Math.max(income - expense, 0);
         const adherence = target ? Math.min((contributed / target) * 100, 100) : 0;
@@ -3188,20 +3203,20 @@
         const feeling = feasible ? "cenário possível e controlável" : "cenário que pede ajustes graduais";
         goalAnalysis.innerHTML = `<strong>${goalType.value}</strong><br>Para alcançar ${formatCurrency(target)} em ${months} meses, a reserva necessária é de aproximadamente <strong>${formatCurrency(monthly)}/mês</strong>.<br><strong>Aderência:</strong> ${adherence.toFixed(0)}% (${formatCurrency(contributed)} acumulado).<br><strong>Cenário atual:</strong> ${available ? `seu resultado disponível estimado é ${formatCurrency(available)}/mês.` : "ainda não há resultado financeiro calculado."}<br><strong>Sentimento:</strong> ${feeling}.<ol class="goal-steps"><li>Registre entradas e saídas por 7 dias.</li><li>Confirme aportes somente após realizar o pagamento.</li><li>Revise o progresso no próximo login e ajuste o ritmo sem comprometer despesas essenciais.</li></ol>`;
       };
-      goalForm.addEventListener("submit", (event) => { event.preventDefault(); renderGoalAnalysis(); localStorage.setItem("contae-goal", JSON.stringify({ type: goalType.value, target: goalTarget.value, months: goalMonths.value })); });
-      const savedGoal = safeParse("contae-goal", null);
+      goalForm.addEventListener("submit", (event) => { event.preventDefault(); renderGoalAnalysis(); writeSubscriberData("contae-goal", { type: goalType.value, target: goalTarget.value, months: goalMonths.value }); });
+      const savedGoal = readSubscriberData("contae-goal", null);
       if (savedGoal) { goalType.value = savedGoal.type; goalTarget.value = savedGoal.target; goalMonths.value = savedGoal.months; renderGoalAnalysis(); }
       const renderGoalHistory = () => {
-        const contributions = safeParse("contae-goal-contributions", []);
+        const contributions = readSubscriberData("contae-goal-contributions", []);
         goalHistory.innerHTML = contributions.length ? contributions.map((item) => `<div class="goal-history-row"><span>${item.date}</span><strong>+ ${formatCurrency(item.value)} · Confirmado</strong></div>`).join("") : "Nenhum aporte confirmado ainda.";
       };
       goalContributionForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const value = Number(goalContribution.value);
         if (!value || !goalContributionDate.value) return;
-        const contributions = safeParse("contae-goal-contributions", []);
+        const contributions = readSubscriberData("contae-goal-contributions", []);
         contributions.push({ value, date: goalContributionDate.value, confirmedAt: new Date().toISOString() });
-        localStorage.setItem("contae-goal-contributions", JSON.stringify(contributions));
+        writeSubscriberData("contae-goal-contributions", contributions);
         goalContributionForm.reset();
         renderGoalHistory();
         renderGoalAnalysis();
@@ -3230,12 +3245,12 @@
         value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
       let income = 0;
       let expense = 0;
-      let transactions = safeParse(storageKey, []);
+      let transactions = readSubscriberData(storageKey, []);
       const saveTransactions = () => {
-        localStorage.setItem(storageKey, JSON.stringify(transactions));
-        saveStatus.textContent = "Salvo agora";
+        const saved = writeSubscriberData(storageKey, transactions);
+        saveStatus.textContent = saved ? "Salvo agora" : "Modo demonstração: não salvo";
         window.setTimeout(() => {
-          saveStatus.textContent = "Salvamento automático ativo";
+          saveStatus.textContent = saved ? "Salvamento automático ativo" : "Dados são apagados ao sair";
         }, 1800);
       };
       const getPeriodTransactions = () => {
@@ -3269,13 +3284,13 @@
         const savingsRate = income > 0 ? Math.max(0, result / income) : 0;
         const expenseTransactions = periodTransactions.filter((item) => item.type === "expense");
         const recurringExpenses = expenseTransactions.filter((item, index, items) => items.findIndex((candidate) => candidate.description === item.description) !== index).length;
-        const reserveContributions = safeParse("contae-goal-contributions", []).reduce((sum, item) => sum + item.value, 0);
+        const reserveContributions = readSubscriberData("contae-goal-contributions", []).reduce((sum, item) => sum + item.value, 0);
         const score = income > 0 ? Math.max(0, Math.min(100, Math.round((savingsRate * 60) + (result >= 0 ? 20 : 0) + (reserveContributions > 0 ? 10 : 0) + (recurringExpenses ? 5 : 10)))) : 0;
         healthScore.textContent = score;
         healthSummary.textContent = income ? `A avaliação considera equilíbrio entre entradas e saídas, capacidade de economia, registros recorrentes e aportes em objetivos. ${savingsRate >= 0.2 ? "Seu principal ponto positivo é a capacidade de economia registrada." : "O principal ponto de atenção é criar mais espaço entre entradas e saídas."}` : "Adicione lançamentos para calcular seu equilíbrio, capacidade de economia e próximos pontos de atenção.";
       };
       const applyProfileName = (email) => {
-        const profile = safeParse("contae-profile", null);
+        const profile = readSubscriberData("contae-profile", null);
         if (profile && (!email || profile.email === email.toLowerCase())) {
           dashboardUserName.textContent = profile.name.split(" ")[0] || "Olá";
         }
@@ -3412,7 +3427,7 @@
         profileMode = mode;
         profileModal.hidden = false;
         profileFeedback.textContent = "";
-        const savedProfile = safeParse("contae-profile", null);
+        const savedProfile = readSubscriberData("contae-profile", null);
         profileTitle.textContent = mode === "edit" ? "Editar perfil" : "Crie seu perfil";
         profileSubmit.innerHTML = mode === "edit" ? "Salvar alterações" : "Criar perfil e ir para o checkout <span aria-hidden=\"true\">&#8594;</span>";
         if (mode === "edit" && savedProfile) {
@@ -3457,7 +3472,7 @@
             "Preencha os campos, aceite os termos e use uma senha com pelo menos 6 caracteres.";
           return;
         }
-        localStorage.setItem("contae-profile", JSON.stringify({ ...profile, consentAcceptedAt: new Date().toISOString() }));
+        writeSubscriberData("contae-profile", { ...profile, consentAcceptedAt: new Date().toISOString() });
         applyProfileName(profile.email);
         if (profileMode === "edit") {
           profileFeedback.style.color = "#0a9b70";
@@ -3572,7 +3587,7 @@
               questionnaire.insertAdjacentHTML("afterend", `<p class="import-result">Complete os campos e autorize o uso dos dados para gerar recomendações.</p>`);
               return;
             }
-            localStorage.setItem("contae-income-profile", JSON.stringify(profile));
+            writeSubscriberData("contae-income-profile", profile);
             showModule("income-plus");
           });
           document.querySelector("#module-edit-profile")?.addEventListener("click", () => openProfile("edit"));
