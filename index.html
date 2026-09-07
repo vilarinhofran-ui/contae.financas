@@ -2076,7 +2076,7 @@
             <div class="module-host" id="module-host" hidden></div>
             <div class="app-topline">
               <div>
-                <h3>Olá, Marina &#128075;</h3>
+                <h3>Olá, <span id="dashboard-user-name">Marina</span> &#128075;</h3>
                 <span class="muted-copy">Aqui está o seu mês até agora.</span>
               </div>
               <div class="app-user">
@@ -2094,19 +2094,19 @@
             <div class="metrics">
               <div class="metric blue">
                 <small>Saldo consolidado</small
-                ><strong id="total-balance">= R$ 4.280,00</strong>
+                ><strong id="total-balance">= R$ 0,00</strong>
               </div>
               <div class="metric positive">
                 <small>+ Entradas</small
-                ><strong id="total-income">+ R$ 5.800,00</strong>
+                ><strong id="total-income">+ R$ 0,00</strong>
               </div>
               <div class="metric">
                 <small>- Saídas</small
-                ><strong id="total-expense">- R$ 1.520,00</strong>
+                ><strong id="total-expense">- R$ 0,00</strong>
               </div>
               <div class="metric positive">
                 <small>Economia do mês</small
-                ><strong id="total-saving">R$ 4.280,00</strong>
+                ><strong id="total-saving">= R$ 0,00</strong>
               </div>
             </div>
             <div class="app-grid">
@@ -2680,11 +2680,9 @@
           </button>
         </div>
         <div class="payment-panel" id="pix-panel">
-          <strong>Chave Pix (telefone)</strong
-          ><span class="pix-key">+55 41 99144-3794</span
-          ><button class="btn btn-primary" id="copy-pix" type="button">
-            Copiar chave Pix
-          </button>
+          <strong>Pagamento via WhatsApp</strong>
+          <p>Solicite o link de pagamento Pix ou parcelado pelo WhatsApp.</p>
+          <a class="btn btn-primary whatsapp-link" href="https://wa.me/55987039711" target="_blank" rel="noopener">&#9742; Solicitar pagamento</a>
         </div>
         <div class="payment-panel" id="link-panel" hidden>
           <strong>Link de pagamento parcelado</strong>
@@ -2810,7 +2808,6 @@
       const linkChoice = document.querySelector("#link-choice");
       const pixPanel = document.querySelector("#pix-panel");
       const linkPanel = document.querySelector("#link-panel");
-      const copyPix = document.querySelector("#copy-pix");
       const requestLink = document.querySelector("#request-link");
       const proofFile = document.querySelector("#proof-file");
       const paymentFeedback = document.querySelector("#payment-feedback");
@@ -2829,6 +2826,7 @@
       const profileClose = document.querySelector("#profile-close");
       const profilePlan = document.querySelector("#profile-plan");
       const profileFeedback = document.querySelector("#profile-feedback");
+      const dashboardUserName = document.querySelector("#dashboard-user-name");
       const profileTitle = document.querySelector("#profile-title");
       const profileSubmit = document.querySelector("#profile-modal #profile-submit");
       const sidebarToggle = document.querySelector("#sidebar-toggle");
@@ -2880,8 +2878,8 @@
 
       const formatCurrency = (value) =>
         value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-      let income = 5800;
-      let expense = 1520;
+      let income = 0;
+      let expense = 0;
       let transactions = JSON.parse(localStorage.getItem(storageKey) || "[]");
       const saveTransactions = () => {
         localStorage.setItem(storageKey, JSON.stringify(transactions));
@@ -2900,6 +2898,13 @@
         if (transaction.type === "income") income += transaction.value;
         else expense += transaction.value;
       });
+      const applyProfileName = (email) => {
+        const profile = JSON.parse(localStorage.getItem("contae-profile") || "null");
+        if (profile && (!email || profile.email === email.toLowerCase())) {
+          dashboardUserName.textContent = profile.name.split(" ")[0] || "Olá";
+        }
+      };
+      applyProfileName();
       updateTotals();
 
       transactionForm.addEventListener("submit", (event) => {
@@ -2977,6 +2982,7 @@
         authFeedback.style.color = "#0a9b70";
         authFeedback.textContent =
           "Acesso autorizado. Abrindo seu dashboard...";
+        applyProfileName(authEmail.value.trim());
         sessionStorage.setItem("contae-authenticated", "1");
         authModal.hidden = true;
         window.location.hash = "app";
@@ -3054,6 +3060,7 @@
           return;
         }
         localStorage.setItem("contae-profile", JSON.stringify({ ...profile, consentAcceptedAt: new Date().toISOString() }));
+        applyProfileName(profile.email);
         if (profileMode === "edit") {
           profileFeedback.style.color = "#0a9b70";
           profileFeedback.textContent = "Perfil atualizado com sucesso.";
@@ -3067,7 +3074,7 @@
         paymentFeedback.textContent =
           "Perfil criado. Escolha a forma de pagamento para concluir.";
         proofFile.value = "";
-        copyPix.focus();
+        pricingCheckout?.focus();
       });
       editProfileButton.addEventListener("click", () => openProfile("edit"));
       editProfileNav.addEventListener("click", () => openProfile("edit"));
@@ -3153,7 +3160,7 @@
         paymentPlan.textContent = `Plano selecionado: ${selectedPlan}`;
         paymentFeedback.textContent = "Escolha Pix ou solicite um link parcelado para concluir o pagamento.";
         proofFile.value = "";
-        copyPix.focus();
+        paymentModal.querySelector(".whatsapp-link")?.focus();
       });
       const closePayment = () => {
         paymentModal.hidden = true;
@@ -3173,11 +3180,6 @@
         pixChoice.classList.remove("active");
         pixPanel.hidden = true;
         linkPanel.hidden = false;
-      });
-      copyPix.addEventListener("click", async () => {
-        await navigator.clipboard?.writeText("+5541991443794");
-        paymentFeedback.textContent =
-          "Chave Pix copiada. Depois do pagamento, envie o comprovante abaixo.";
       });
       requestLink.addEventListener("click", () => {
         paymentFeedback.textContent =
