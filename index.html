@@ -715,6 +715,13 @@
       .insight { padding: 12px; border-left: 3px solid var(--blue); border-radius: 5px; background: #eef6ff; color: #3e5e83; font-size: 0.76rem; line-height: 1.45; }
       .opportunity { border-left-color: var(--mint); background: #edfff7; }
       .module-action { margin-top: 12px; }
+      .privacy-consent { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); font-size: 0.68rem; line-height: 1.45; }
+      .privacy-consent input { flex: 0 0 auto; margin-top: 2px; accent-color: var(--blue); }
+      .privacy-consent a { color: var(--blue); text-decoration: underline; }
+      .privacy-box { margin-top: 18px; padding: 13px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: #f8fbff; font-size: 0.7rem; line-height: 1.5; }
+      .privacy-box strong { color: var(--ink); }
+      .logout-button { padding: 7px 10px; border: 1px solid #f0c7d0; border-radius: 6px; color: #b5425d; background: #fff7f8; font-size: 0.68rem; font-weight: 700; }
+      .logout-button:hover { background: #ffecee; }
       .app-topline {
         display: flex;
         justify-content: space-between;
@@ -2074,6 +2081,7 @@
               </div>
               <div class="app-user">
                 <span>Plano Essencial</span><span class="app-avatar">M</span>
+                <button class="logout-button" id="logout-button" type="button">Sair</button>
                 <button
                   class="profile-edit-button"
                   id="edit-profile-button"
@@ -2086,15 +2094,15 @@
             <div class="metrics">
               <div class="metric blue">
                 <small>Saldo consolidado</small
-                ><strong id="total-balance">R$ 4.280,00</strong>
+                ><strong id="total-balance">= R$ 4.280,00</strong>
               </div>
               <div class="metric positive">
                 <small>+ Entradas</small
-                ><strong id="total-income">R$ 5.800,00</strong>
+                ><strong id="total-income">+ R$ 5.800,00</strong>
               </div>
               <div class="metric">
                 <small>- Saídas</small
-                ><strong id="total-expense">R$ 1.520,00</strong>
+                ><strong id="total-expense">- R$ 1.520,00</strong>
               </div>
               <div class="metric positive">
                 <small>Economia do mês</small
@@ -2222,7 +2230,8 @@
                     type="number"
                     min="0.01"
                     step="0.01"
-                    placeholder="Valor (R$)"
+                    inputmode="decimal"
+                    placeholder="0,00"
                     required
                   />
                   <input type="hidden" id="transaction-bank" value="000" />
@@ -2646,6 +2655,9 @@
             <option value="Mensal">Mensal - R$ 19,90 / mês</option>
             <option value="Anual">Anual - R$ 178,80 / ano</option>
           </select>
+          <label class="privacy-consent"><input id="profile-consent" type="checkbox" required /> <span>Li e aceito os <a href="#termos" target="_blank">Termos de uso</a> e a <a href="#privacidade" target="_blank">Política de privacidade</a>. Autorizo o tratamento dos dados necessários para oferecer o CONTAÊ.</span></label>
+          <div class="privacy-box" id="termos"><strong>Privacidade e condições de uso</strong><br />Seus dados devem ser usados somente para operar sua conta, cálculos financeiros e recursos solicitados. Não compartilhamos dados sensíveis com terceiros sem base legal e consentimento quando necessário. Você pode solicitar acesso, correção, exportação ou exclusão dos seus dados. O acesso de produção deve ser protegido por autenticação no servidor e não por dados inseridos no navegador.</div>
+          <div class="privacy-box" id="privacidade"><strong>Compartilhamento de dados</strong><br />O CONTAÊ não vende dados pessoais. Integrações futuras deverão informar finalidade, fornecedor, dados envolvidos e base legal antes de qualquer compartilhamento.</div>
           <button class="btn btn-primary" id="profile-submit" type="submit">
             Criar perfil e ir para o checkout
             <span aria-hidden="true">&#8594;</span>
@@ -2836,6 +2848,8 @@
       const appShell = document.querySelector(".app-shell");
       const editProfileButton = document.querySelector("#edit-profile-button");
       const editProfileNav = document.querySelector("#edit-profile-nav");
+      const logoutButton = document.querySelector("#logout-button");
+      const profileConsent = document.querySelector("#profile-consent");
       const moduleHost = document.querySelector("#module-host");
       const appMain = document.querySelector(".app-main");
       const startProfileButtons = [
@@ -2890,10 +2904,10 @@
         }, 1800);
       };
       const updateTotals = () => {
-        totalIncome.textContent = formatCurrency(income);
-        totalExpense.textContent = formatCurrency(expense);
-        totalBalance.textContent = formatCurrency(income - expense);
-        totalSaving.textContent = formatCurrency(income - expense);
+        totalIncome.textContent = `+ ${formatCurrency(income)}`;
+        totalExpense.textContent = `- ${formatCurrency(expense)}`;
+        totalBalance.textContent = `= ${formatCurrency(income - expense)}`;
+        totalSaving.textContent = `= ${formatCurrency(income - expense)}`;
       };
       transactions.forEach((transaction) => {
         if (transaction.type === "income") income += transaction.value;
@@ -2976,6 +2990,7 @@
         authFeedback.style.color = "#0a9b70";
         authFeedback.textContent =
           "Acesso autorizado. Abrindo seu dashboard...";
+        sessionStorage.setItem("contae-authenticated", "1");
         authModal.hidden = true;
         window.location.hash = "app";
       };
@@ -2998,6 +3013,7 @@
           "O acesso admin será validado no servidor com senha protegida e recuperação enviada ao e-mail cadastrado. Esta página não libera privilégios localmente.";
       });
       demoClient.addEventListener("click", () => {
+        sessionStorage.setItem("contae-authenticated", "1");
         authModal.hidden = true;
         window.location.hash = "app";
       });
@@ -3013,6 +3029,7 @@
           document.querySelector("#profile-phone").value = savedProfile.phone || "";
           document.querySelector("#profile-email").value = savedProfile.email || "";
           profilePlan.value = savedProfile.plan || "Mensal";
+          profileConsent.checked = Boolean(savedProfile.consentAcceptedAt);
         }
         document.querySelector("#profile-name").focus();
       };
@@ -3041,14 +3058,15 @@
           !profile.phone ||
           !profile.email ||
           !profilePlan.value ||
+          !profileConsent.checked ||
           (profileMode === "create" && document.querySelector("#profile-password").value.length < 6)
         ) {
           profileFeedback.style.color = "#c24561";
           profileFeedback.textContent =
-            "Preencha todos os campos e use uma senha com pelo menos 6 caracteres.";
+            "Preencha os campos, aceite os termos e use uma senha com pelo menos 6 caracteres.";
           return;
         }
-        localStorage.setItem("contae-profile", JSON.stringify(profile));
+        localStorage.setItem("contae-profile", JSON.stringify({ ...profile, consentAcceptedAt: new Date().toISOString() }));
         if (profileMode === "edit") {
           profileFeedback.style.color = "#0a9b70";
           profileFeedback.textContent = "Perfil atualizado com sucesso.";
@@ -3066,6 +3084,11 @@
       });
       editProfileButton.addEventListener("click", () => openProfile("edit"));
       editProfileNav.addEventListener("click", () => openProfile("edit"));
+      logoutButton.addEventListener("click", () => {
+        sessionStorage.removeItem("contae-authenticated");
+        window.location.hash = "inicio";
+        document.body.classList.remove("dashboard-mode");
+      });
       sidebarToggle.addEventListener("click", () => {
         const collapsed = appShell.classList.toggle("collapsed");
         sidebarToggle.textContent = collapsed ? "»" : "«";
@@ -3079,6 +3102,7 @@
         )
           return;
         adminSection.classList.add("admin-visible");
+        sessionStorage.setItem("contae-authenticated", "1");
         authModal.hidden = true;
         window.location.hash = "admin";
       });
@@ -3297,6 +3321,11 @@
       ]);
       const navigateToHash = () => {
         const route = window.location.hash.slice(1) || "inicio";
+        const authenticated = sessionStorage.getItem("contae-authenticated") === "1";
+        if ((route === "app" || route === "admin") && !authenticated) {
+          window.location.hash = "inicio";
+          return;
+        }
         document.body.classList.toggle("dashboard-mode", route === "app");
         if (!validRoutes.has(route)) window.location.hash = "inicio";
       };
