@@ -1467,9 +1467,10 @@
       }
       .pricing-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
         max-width: 780px;
+        margin: 0 auto;
       }
       .price-card {
         position: relative;
@@ -1480,6 +1481,7 @@
         border: 1px solid var(--line);
         border-radius: 10px;
         background: #fbfdff;
+        text-align: center;
         transition:
           transform 0.25s ease,
           border-color 0.25s ease,
@@ -1519,6 +1521,10 @@
         font-size: 0.76rem;
         line-height: 1.45;
       }
+      .price-card .app-select {
+        width: min(100%, 420px);
+        margin: 0 auto;
+      }
       .price {
         color: var(--ink);
         font-family: "Space Grotesk", sans-serif;
@@ -1535,6 +1541,7 @@
       }
       .price-list {
         display: grid;
+        justify-items: center;
         gap: 9px;
         margin: 19px 0 22px;
         padding: 0;
@@ -1550,7 +1557,9 @@
       }
       .price-card .btn {
         width: 100%;
+        max-width: 320px;
         margin-top: auto;
+        align-self: center;
         padding: 11px;
         font-size: 0.75rem;
       }
@@ -1767,7 +1776,7 @@
           grid-template-columns: repeat(2, 1fr);
         }
         .pricing-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: minmax(0, 1fr);
         }
         .course-layout,
         .admin-layout {
@@ -1975,7 +1984,7 @@
     </style>
   </head>
   <body>
-    <a class="whatsapp-float" href="https://wa.me/55987039711" target="_blank" rel="noopener" aria-label="Falar com o CONTAÊ no WhatsApp">&#9742;</a>
+    <a class="whatsapp-float" href="https://wa.me/554187039711?text=Olá%2C%20quero%20saber%20mais%20sobre%20o%20CONTAÊ." target="_blank" rel="noopener" aria-label="Falar com o CONTAÊ no WhatsApp">&#9742;</a>
     <header class="hero">
       <div class="container topbar">
         <nav class="nav" aria-label="Navegação principal">
@@ -2889,7 +2898,7 @@
         <div class="payment-panel" id="pix-panel">
           <strong>Pagamento via WhatsApp</strong>
           <p>Solicite o link de pagamento Pix ou parcelado pelo WhatsApp.</p>
-          <a class="btn btn-primary whatsapp-link" href="https://wa.me/55987039711" target="_blank" rel="noopener">&#9742; Solicitar pagamento</a>
+          <a class="btn btn-primary whatsapp-link" href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20um%20link%20de%20pagamento%20do%20CONTAÊ." target="_blank" rel="noopener">&#9742; Solicitar pagamento</a>
         </div>
         <div class="payment-panel" id="link-panel" hidden>
           <strong>Link de pagamento parcelado</strong>
@@ -2920,7 +2929,7 @@
         </p>
         <a
           class="whatsapp-link"
-          href="https://wa.me/55987039711"
+          href="https://wa.me/554187039711?text=Olá%2C%20quero%20solicitar%20um%20link%20de%20pagamento%20do%20CONTAÊ."
           target="_blank"
           rel="noopener"
           >&#9742; Solicitar link de pagamento pelo WhatsApp</a
