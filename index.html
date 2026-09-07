@@ -741,7 +741,7 @@
       .whatsapp-float { position: fixed; right: 20px; bottom: 20px; z-index: 8; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: white; background: #19b86d; box-shadow: 0 10px 25px rgba(25, 184, 109, 0.3); font-size: 1.45rem; }
       .whatsapp-float:hover { transform: translateY(-3px); }
       .tour-section { padding: 86px 0; background: #edf5ff; }
-      .tour-stage { max-width: 720px; margin: 28px auto 0; padding: 15px; border: 1px solid #cfe0f2; border-radius: 14px; background: var(--white); box-shadow: var(--shadow); }
+      .tour-stage { max-width: 720px; margin: 28px auto 0; padding: 15px; border: 1px solid #cfe0f2; border-top: 4px solid var(--mint); border-radius: 14px; background: var(--white); box-shadow: 0 22px 50px rgba(18, 48, 95, 0.16); }
       .tour-window { display: grid; grid-template-columns: 120px 1fr; min-height: 220px; overflow: hidden; border-radius: 9px; background: #fbfdff; }
       .tour-sidebar { padding: 16px 10px; color: #afbed3; background: var(--navy); font-size: 0.66rem; }
       .tour-sidebar strong { display: block; margin-bottom: 18px; color: var(--mint); font-family: "Space Grotesk", sans-serif; }
@@ -754,7 +754,8 @@
       .tour-preview { height: 46px; margin-top: 20px; border-radius: 8px; background: linear-gradient(90deg, #1479eb 0 42%, #e6f0fc 42% 68%, #3ee0a0 68%); animation: tour-pulse 3s ease-in-out infinite; }
       @keyframes tour-pulse { 0%, 100% { opacity: 0.7; transform: scaleX(0.96); } 50% { opacity: 1; transform: scaleX(1); } }
       .simulator { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
-      .simulator-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.68rem; font-weight: 700; }
+      .simulator-label { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 7px; padding: 5px 8px; border-radius: 5px; color: #237052; background: #edfff7; font-size: 0.68rem; font-weight: 700; }
+      .simulator-label::before { content: "●"; color: var(--mint); font-size: 0.6rem; }
       .simulator-title { display: inline-block; margin-bottom: 6px; color: var(--blue); font-family: "Space Grotesk", sans-serif; font-size: 0.78rem; font-weight: 700; }
       .simulator-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
       .simulator-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
