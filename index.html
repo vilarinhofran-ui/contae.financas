@@ -742,10 +742,14 @@
       .whatsapp-float:hover { transform: translateY(-3px); }
       .tour-section { padding: 86px 0; background: #edf5ff; }
       .tour-stage { max-width: 720px; margin: 28px auto 0; padding: 15px; border: 1px solid #cfe0f2; border-top: 4px solid var(--mint); border-radius: 14px; background: var(--white); box-shadow: 0 22px 50px rgba(18, 48, 95, 0.16); }
-      .tour-window { display: grid; grid-template-columns: 120px 1fr; min-height: 220px; overflow: hidden; border-radius: 9px; background: #fbfdff; }
-      .tour-sidebar { padding: 16px 10px; color: #afbed3; background: var(--navy); font-size: 0.66rem; }
-      .tour-sidebar strong { display: block; margin-bottom: 18px; color: var(--mint); font-family: "Space Grotesk", sans-serif; }
-      .tour-sidebar span { display: block; margin: 12px 0; }
+      .tour-window { display: block; min-height: 220px; overflow: hidden; border-radius: 9px; background: #fbfdff; }
+      .tour-window .tour-window { display: contents; }
+      .tour-sidebar { display: none; }
+      .tour-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+      .tour-card { padding: 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--white); text-align: left; cursor: pointer; }
+      .tour-card:hover, .tour-card.active { border-color: var(--blue); background: #eef6ff; }
+      .tour-card strong { display: block; font-size: 0.7rem; }
+      .tour-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 0.6rem; }
       .tour-sidebar button { display: block; width: 100%; margin: 8px 0; padding: 7px 6px; border-radius: 5px; color: inherit; background: transparent; text-align: left; font: inherit; }
       .tour-sidebar button:hover, .tour-sidebar button.active { color: var(--white); background: #123262; }
       .tour-content { padding: 22px; }
@@ -2018,7 +2022,17 @@
     <section class="tour-section" id="tour">
       <div class="container">
         <div class="section-head"><div><div class="section-kicker">Veja por dentro</div><h2>Uma jornada que acompanha você.</h2></div><p>Explore o dashboard, lançamentos, objetivos e Renda+ em uma experiência simples e organizada.</p></div>
-        <div class="tour-stage" aria-label="Prévia animada dos módulos do CONTAÊ">
+        <div class="tour-stage" aria-label="Simulador público para conhecer o CONTAÊ">
+          <div class="tour-card-grid" aria-label="Funções do ContaÊ">
+            <button class="tour-card active" type="button" data-tour-module="overview"><strong>■ Visão geral</strong><small>Saldo e resumo</small></button>
+            <button class="tour-card" type="button" data-tour-module="income"><strong>↑ Entradas</strong><small>Fontes de renda</small></button>
+            <button class="tour-card" type="button" data-tour-module="expenses"><strong>↓ Saídas</strong><small>Gastos e alertas</small></button>
+            <button class="tour-card" type="button" data-tour-module="banks"><strong>◉ Bancos</strong><small>Contas e saldos</small></button>
+            <button class="tour-card" type="button" data-tour-module="goals"><strong>★ Objetivos</strong><small>Metas e aportes</small></button>
+            <button class="tour-card" type="button" data-tour-module="income-plus"><strong>＋ Renda+</strong><small>Oportunidades</small></button>
+            <button class="tour-card" type="button" data-tour-module="settings"><strong>⚙ Configurações</strong><small>Privacidade e alertas</small></button>
+          </div>
+          <div class="tour-window" aria-label="Prévia animada dos módulos do CONTAÊ">
           <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><button class="active" type="button" data-tour-module="overview">■ Visão geral</button><button type="button" data-tour-module="income">↑ Entradas</button><button type="button" data-tour-module="expenses">↓ Saídas</button><button type="button" data-tour-module="banks">◉ Bancos</button><button type="button" data-tour-module="goals">★ Objetivos</button><button type="button" data-tour-module="income-plus">＋ Renda+</button><button type="button" data-tour-module="settings">⚙ Configurações</button></div><div class="tour-content"><span class="simulator-title">Simulador público do ContaÊ</span><h3 id="tour-module-title">Seu próximo passo fica claro.</h3><p id="tour-module-description">Veja saldo, organize lançamentos e transforme objetivos em ações.</p><p class="tour-manual" id="tour-module-manual">Resumo de saldo, entradas, saídas e próximos passos.</p><div class="tour-topics" id="tour-module-topics"><span class="tour-topic">Saldo</span><span class="tour-topic">KPIs</span><span class="tour-topic">Resumo</span></div><div class="tour-preview"></div><div class="simulator"><span class="simulator-label">Experimente sem criar conta · seus dados não são salvos</span><form class="simulator-form" id="public-simulator"><input class="app-input" id="sim-income" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Entrada (R$)" /><input class="app-input" id="sim-expense" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saída (R$)" /><button class="btn btn-primary" type="submit">Simular</button></form><div class="simulator-result"><div>Entrada<strong id="sim-income-result">+ R$ 0,00</strong></div><div>Saída<strong id="sim-expense-result">- R$ 0,00</strong></div><div>Saldo<strong id="sim-balance-result">= R$ 0,00</strong></div></div><div class="simulator-goal"><input class="app-input" id="sim-goal-target" type="number" min="0" step="0.01" placeholder="Objetivo (R$)" /><input class="app-input" id="sim-goal-months" type="number" min="1" step="1" placeholder="Meses" /><button class="simulator-clear" id="sim-goal-calc" type="button">Analisar objetivo</button><small id="sim-goal-result">Informe valor e prazo para simular seu caminho.</small></div><button class="simulator-clear" id="sim-clear" type="button">Zerar simulação</button><p class="simulator-disclaimer">Demonstração isolada: não acessa, altera ou compartilha dados de usuários.</p></div></div></div>
         </div>
       </div>
