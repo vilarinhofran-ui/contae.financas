@@ -2163,7 +2163,7 @@
 
       <main id="inicio" class="container hero-content">
         <div>
-          <div class="eyebrow">Sua <span class="typewriter-word" id="typewriter"></span> começa aqui</div>
+          <div class="eyebrow"><span id="article">Sua</span> <span class="typewriter-word" id="typewriter"></span> começa aqui</div>
           <h1>Dinheiro sob controle. <em>Vida em movimento.</em></h1>
           <p class="hero-copy">
             Acompanhe suas entradas, gastos e objetivos com clareza. Sem burocracia, sem susto. Organize sua vida financeira em um único painel.
@@ -3116,33 +3116,36 @@
 
     <script>
       const typewriterWords = [
-        "Entradas",
-        "Equilíbrio",
-        "Evolução",
-        "Estratégia",
-        "Economia",
-        "Expansão",
-        "Esperança",
-        "Empoderamento",
-        "Excelência",
-        "Estabilidade",
-        "Experiência"
+        { word: "Entradas", article: "Suas" },
+        { word: "Equilíbrio", article: "Seu" },
+        { word: "Evolução", article: "Sua" },
+        { word: "Estratégia", article: "Sua" },
+        { word: "Economia", article: "Sua" },
+        { word: "Expansão", article: "Sua" },
+        { word: "Esperança", article: "Sua" },
+        { word: "Empoderamento", article: "Seu" },
+        { word: "Excelência", article: "Sua" },
+        { word: "Estabilidade", article: "Sua" },
+        { word: "Experiência", article: "Sua" }
       ];
 
       function typewriterEffect() {
         const typewriterEl = document.querySelector("#typewriter");
-        if (!typewriterEl) return;
+        const articleEl = document.querySelector("#article");
+        if (!typewriterEl || !articleEl) return;
 
         let wordIndex = 0;
         let charIndex = 0;
         let isTyping = true;
 
         function type() {
-          const currentWord = typewriterWords[wordIndex];
+          const currentData = typewriterWords[wordIndex];
+          const currentWord = currentData.word;
 
           if (isTyping) {
             if (charIndex < currentWord.length) {
               typewriterEl.textContent = currentWord.slice(0, charIndex + 1);
+              articleEl.textContent = currentData.article;
               charIndex++;
               setTimeout(type, 80);
             } else {
