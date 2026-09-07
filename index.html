@@ -743,6 +743,14 @@
       .tour-content p { color: var(--muted); font-size: 0.75rem; }
       .tour-preview { height: 46px; margin-top: 20px; border-radius: 8px; background: linear-gradient(90deg, #1479eb 0 42%, #e6f0fc 42% 68%, #3ee0a0 68%); animation: tour-pulse 3s ease-in-out infinite; }
       @keyframes tour-pulse { 0%, 100% { opacity: 0.7; transform: scaleX(0.96); } 50% { opacity: 1; transform: scaleX(1); } }
+      .simulator { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
+      .simulator-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.68rem; font-weight: 700; }
+      .simulator-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+      .simulator-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+      .simulator-result div { padding: 9px; border-radius: 7px; background: #f4f8fd; font-size: 0.66rem; }
+      .simulator-result strong { display: block; margin-top: 3px; font-family: "Space Grotesk", sans-serif; }
+      .simulator-disclaimer { margin: 9px 0 0; color: var(--muted); font-size: 0.62rem; }
+      .simulator-clear { padding: 9px 11px; border: 1px solid #f0c7d0; border-radius: 7px; color: #b5425d; background: #fff7f8; font-size: 0.68rem; font-weight: 700; }
       .app-topline {
         display: flex;
         justify-content: space-between;
@@ -1994,7 +2002,7 @@
       <div class="container">
         <div class="section-head"><div><div class="section-kicker">Veja por dentro</div><h2>Uma jornada que acompanha você.</h2></div><p>Explore o dashboard, lançamentos, objetivos e Renda+ em uma experiência simples e organizada.</p></div>
         <div class="tour-stage" aria-label="Prévia animada dos módulos do CONTAÊ">
-          <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><span>■ Visão geral</span><span>↑ Entradas</span><span>↓ Saídas</span><span>★ Objetivos</span><span>＋ Renda+</span></div><div class="tour-content"><h3>Seu próximo passo fica claro.</h3><p>Veja saldo, organize lançamentos e transforme objetivos em ações.</p><div class="tour-preview"></div></div></div>
+          <div class="tour-window"><div class="tour-sidebar"><strong>contaÊ</strong><span>■ Visão geral</span><span>↑ Entradas</span><span>↓ Saídas</span><span>★ Objetivos</span><span>＋ Renda+</span></div><div class="tour-content"><h3>Seu próximo passo fica claro.</h3><p>Veja saldo, organize lançamentos e transforme objetivos em ações.</p><div class="tour-preview"></div><div class="simulator"><span class="simulator-label">Simulador público · seus dados não são salvos</span><form class="simulator-form" id="public-simulator"><input class="app-input" id="sim-income" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Entrada (R$)" /><input class="app-input" id="sim-expense" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saída (R$)" /><button class="btn btn-primary" type="submit">Simular</button></form><div class="simulator-result"><div>Entrada<strong id="sim-income-result">+ R$ 0,00</strong></div><div>Saída<strong id="sim-expense-result">- R$ 0,00</strong></div><div>Saldo<strong id="sim-balance-result">= R$ 0,00</strong></div></div><button class="simulator-clear" id="sim-clear" type="button">Zerar simulação</button><p class="simulator-disclaimer">Demonstração isolada: não acessa, altera ou compartilha dados de usuários.</p></div></div></div>
         </div>
       </div>
     </section>
@@ -2904,9 +2912,17 @@
       const installLater = document.querySelector("#install-later");
       const installHint = document.querySelector("#install-hint");
       const footerInstallLink = document.querySelector("#footer-install-link");
+      const publicSimulator = document.querySelector("#public-simulator");
+      const simIncome = document.querySelector("#sim-income");
+      const simExpense = document.querySelector("#sim-expense");
+      const simIncomeResult = document.querySelector("#sim-income-result");
+      const simExpenseResult = document.querySelector("#sim-expense-result");
+      const simBalanceResult = document.querySelector("#sim-balance-result");
+      const simClear = document.querySelector("#sim-clear");
       let deferredInstallPrompt;
       let selectedPlan = "Mensal";
       let profileMode = "create";
+      const simulatorState = { income: 0, expense: 0 };
 
       if (
         window.location.hostname === "localhost" ||
@@ -2915,6 +2931,28 @@
         demoAdmin.style.display = "block";
       }
       demoClient.style.display = "block";
+
+      const renderSimulator = () => {
+        const money = (value) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        simIncomeResult.textContent = `+ ${money(simulatorState.income)}`;
+        simExpenseResult.textContent = `- ${money(simulatorState.expense)}`;
+        const balance = simulatorState.income - simulatorState.expense;
+        simBalanceResult.textContent = balance < 0 ? `- ${money(Math.abs(balance))}` : `= ${money(balance)}`;
+      };
+      publicSimulator.addEventListener("submit", (event) => {
+        event.preventDefault();
+        simulatorState.income = Number(simIncome.value) || 0;
+        simulatorState.expense = Number(simExpense.value) || 0;
+        renderSimulator();
+      });
+      simClear.addEventListener("click", () => {
+        simulatorState.income = 0;
+        simulatorState.expense = 0;
+        simIncome.value = "";
+        simExpense.value = "";
+        renderSimulator();
+      });
+      renderSimulator();
 
       menuToggle.addEventListener("click", () => {
         const isOpen = navLinks.classList.toggle("open");
