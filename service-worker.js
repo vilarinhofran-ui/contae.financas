@@ -1,4 +1,4 @@
-const CACHE_NAME = "contae-v20";
+const CACHE_NAME = "contae-v21";
 const APP_SHELL = [
   "./",
   "./index.html",
